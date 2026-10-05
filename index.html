@@ -1,0 +1,362 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulateur Crypto</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  color-scheme: light;
+  --bg:#f4f4f2; --surface-1:#fcfcfb; --line:#e3e2dd;
+  --text-primary:#0b0b0b; --text-secondary:#52514e; --text-muted:#7a7974;
+  --accent:#2a78d6; --good:#008300; --bad:#c62f2e;
+  --series-1:#2a78d6; --series-2:#eb6834; --series-3:#1baf7a; --series-4:#eda100; --series-5:#e87ba4;
+}
+@media (prefers-color-scheme: dark){
+  :root:where(:not([data-theme="light"])){
+    color-scheme: dark;
+    --bg:#111110; --surface-1:#1a1a19; --line:#2e2d2a;
+    --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8e86;
+    --accent:#3987e5; --good:#3fb950; --bad:#e66767;
+    --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#111110; --surface-1:#1a1a19; --line:#2e2d2a;
+  --text-primary:#ffffff; --text-secondary:#c3c2b7; --text-muted:#8f8e86;
+  --accent:#3987e5; --good:#3fb950; --bad:#e66767;
+  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text-primary);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 48px}
+h1{font-size:1.6rem;margin:0 0 4px}
+.sub{color:var(--text-secondary);margin:0 0 20px}
+.banner{background:var(--surface-1);border:1px solid var(--line);border-left:4px solid var(--series-4);border-radius:10px;padding:12px 16px;margin-bottom:20px;color:var(--text-secondary);font-size:.92rem}
+.card{background:var(--surface-1);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;align-items:end}
+label{display:block;font-size:.82rem;color:var(--text-secondary);margin-bottom:4px;font-weight:600}
+select,input{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text-primary);font:inherit}
+button{padding:10px 18px;border:0;border-radius:8px;background:var(--accent);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}
+.strats{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:14px}
+.strats label{display:flex;align-items:center;gap:6px;font-weight:500;color:var(--text-primary);font-size:.9rem;margin:0;cursor:pointer}
+.strats input{width:auto}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+#status{margin-top:10px;color:var(--text-secondary);font-size:.9rem;min-height:1.4em}
+.chartbox{position:relative;height:380px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap}
+.toolbar h2,.card h2{font-size:1.1rem;margin:0}
+.toggle{font-size:.85rem;color:var(--text-secondary);display:flex;gap:6px;align-items:center}
+.toggle input{width:auto}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{padding:9px 8px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--text-secondary);font-weight:600;font-size:.8rem}
+td:first-child,th:first-child{text-align:left}
+.tablewrap{overflow-x:auto}
+.pos{color:var(--good);font-weight:600}.neg{color:var(--bad);font-weight:600}
+.lesson{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.lesson div{border:1px solid var(--line);border-radius:10px;padding:12px;font-size:.9rem;color:var(--text-secondary)}
+.lesson b{color:var(--text-primary);display:flex;gap:6px;align-items:center;margin-bottom:4px}
+.verdict{font-size:.95rem;color:var(--text-primary);margin:0 0 12px}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Simulateur Crypto</h1>
+  <p class="sub">Teste des stratégies connues sur les vrais prix du passé, avec de l'argent virtuel et les frais comptés.</p>
+  <div class="banner">Simulation seulement : aucun argent réel n'est utilisé, et ce n'est pas un conseil d'investissement. Les résultats passés ne garantissent pas les résultats futurs.</div>
+
+  <div class="card">
+    <div class="controls">
+      <div><label for="asset">Crypto</label>
+        <select id="asset">
+          <option value="BTCEUR">Bitcoin (BTC)</option>
+          <option value="ETHEUR">Ethereum (ETH)</option>
+          <option value="SOLEUR">Solana (SOL)</option>
+          <option value="XRPEUR">XRP</option>
+          <option value="BNBEUR">BNB</option>
+          <option value="ADAEUR">Cardano (ADA)</option>
+          <option value="DOGEEUR">Dogecoin (DOGE)</option>
+        </select></div>
+      <div><label for="years">Période</label>
+        <select id="years"><option value="1">1 an</option><option value="2">2 ans</option><option value="3" selected>3 ans</option><option value="5">5 ans</option></select></div>
+      <div><label for="capital">Mise de départ (€)</label><input id="capital" type="number" min="1" step="1" value="10"></div>
+      <div><label for="monthly">Ajout chaque mois (€)</label><input id="monthly" type="number" min="0" step="1" value="0"></div>
+      <div><label for="fee">Frais par opération (%)</label><input id="fee" type="number" min="0" step="0.1" value="1"></div>
+      <div><button id="run">Lancer la simulation</button></div>
+    </div>
+    <div class="strats" id="strats"></div>
+    <div id="status"></div>
+  </div>
+
+  <div id="results" class="hidden">
+    <div class="card">
+      <div class="toolbar"><h2 id="chartTitle">Valeur du portefeuille</h2>
+        <label class="toggle"><input type="checkbox" id="logscale"> Échelle logarithmique</label></div>
+      <div class="chartbox"><canvas id="chart" aria-label="Valeur du portefeuille de chaque stratégie au fil du temps" role="img"></canvas></div>
+    </div>
+    <div class="card">
+      <h2 style="margin-bottom:10px">Résultats</h2>
+      <p class="verdict" id="verdict"></p>
+      <div class="tablewrap"><table id="table"></table></div>
+    </div>
+    <div class="card">
+      <h2 style="margin-bottom:6px">Test anti-illusion</h2>
+      <p class="sub" style="margin-bottom:10px">On coupe la période en deux. Une stratégie sérieuse doit marcher sur les <b>deux</b> moitiés, pas seulement sur une.</p>
+      <div class="tablewrap"><table id="split"></table></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin-bottom:10px">Les stratégies, expliquées simplement</h2>
+    <div class="lesson" id="lesson"></div>
+  </div>
+  <p class="sub" style="font-size:.8rem">Prix : données publiques de Binance (paires en euros), un prix par jour. Les ordres sont simulés à l'ouverture du jour suivant le signal.</p>
+</div>
+<script>
+// ===== Moteur de simulation (argent virtuel) =====
+// candles : [{t: timestamp ms, o: ouverture, c: clôture}] triés par date
+
+function sma(values, n) {
+  const out = new Array(values.length).fill(null);
+  let sum = 0;
+  for (let i = 0; i < values.length; i++) {
+    sum += values[i];
+    if (i >= n) sum -= values[i - n];
+    if (i >= n - 1) out[i] = sum / n;
+  }
+  return out;
+}
+
+function rsi(values, n = 14) {
+  const out = new Array(values.length).fill(null);
+  let gain = 0, loss = 0;
+  for (let i = 1; i < values.length; i++) {
+    const d = values[i] - values[i - 1];
+    const g = Math.max(d, 0), l = Math.max(-d, 0);
+    if (i <= n) {
+      gain += g; loss += l;
+      if (i === n) { gain /= n; loss /= n; out[i] = loss === 0 ? 100 : 100 - 100 / (1 + gain / loss); }
+    } else {
+      gain = (gain * (n - 1) + g) / n;
+      loss = (loss * (n - 1) + l) / n;
+      out[i] = loss === 0 ? 100 : 100 - 100 / (1 + gain / loss);
+    }
+  }
+  return out;
+}
+
+const STRATEGIES = {
+  hold: {
+    name: "Acheter et garder",
+    short: "On achète au début et on ne touche plus à rien.",
+    // renvoie la part du portefeuille à mettre en crypto (0 ou 1) ; null = ne rien changer
+    signal: () => 1,
+  },
+  dca: {
+    name: "Achat régulier (DCA)",
+    short: "On découpe la somme en 12 parts et on achète une part chaque mois. Ça lisse le prix d'achat.",
+    dca: true,
+  },
+  cross: {
+    name: "Croisement 50/200 jours",
+    short: "On est investi quand la moyenne des 50 derniers jours est au-dessus de celle des 200 jours. Sinon, on garde l'argent.",
+    signal: (i, ind) => (ind.sma50[i] == null || ind.sma200[i] == null) ? 0 : (ind.sma50[i] > ind.sma200[i] ? 1 : 0),
+  },
+  trend: {
+    name: "Suivi de tendance (100 j)",
+    short: "On est investi seulement quand le prix est au-dessus de sa moyenne des 100 derniers jours.",
+    signal: (i, ind, c) => ind.sma100[i] == null ? 0 : (c[i] > ind.sma100[i] ? 1 : 0),
+  },
+  rsi: {
+    name: "Rebond RSI",
+    short: "On achète quand le prix a beaucoup baissé (RSI sous 30) et on vend quand il a beaucoup monté (RSI au-dessus de 70).",
+    signal: (i, ind) => ind.rsi[i] == null ? null : (ind.rsi[i] < 30 ? 1 : ind.rsi[i] > 70 ? 0 : null),
+  },
+};
+
+// opts : {capital, monthly, feePct, start, end} — indicateurs calculés sur tout l'historique,
+// simulation seulement de start à end (les jours avant servent à « chauffer » les moyennes)
+function runStrategy(key, candles, opts) {
+  const S = STRATEGIES[key];
+  const closes = candles.map(k => k.c);
+  const ind = { sma50: sma(closes, 50), sma100: sma(closes, 100), sma200: sma(closes, 200), rsi: rsi(closes, 14) };
+  const fee = opts.feePct / 100;
+  let cash = opts.capital, qty = 0, invested = opts.capital, fees = 0, trades = 0;
+  let target = 0, dcaLeft = 0, dcaPart = 0;
+  if (S.dca) { dcaLeft = 12; dcaPart = opts.capital / 12; }
+  const curve = [];
+  let peak = 0, maxDD = 0, lastMonth = null;
+
+  const buy = (eur, price) => {
+    eur = Math.min(eur, cash);
+    if (eur < 0.01) return;
+    const f = eur * fee;
+    qty += (eur - f) / price; cash -= eur; fees += f; trades++;
+  };
+  const sellAll = (price) => {
+    if (qty <= 0) return;
+    const eur = qty * price, f = eur * fee;
+    cash += eur - f; qty = 0; fees += f; trades++;
+  };
+
+  const start = opts.start || 0, end = opts.end || candles.length;
+  for (let i = start; i < end; i++) {
+    const price = candles[i].o; // on agit à l'ouverture du jour (décision prise la veille : pas de triche)
+    const d = new Date(candles[i].t);
+    const month = d.getUTCFullYear() * 12 + d.getUTCMonth();
+    const newMonth = lastMonth !== null && month !== lastMonth;
+    if (newMonth && opts.monthly > 0) { cash += opts.monthly; invested += opts.monthly; }
+
+    if (S.dca) {
+      if (i === start || newMonth) {
+        if (dcaLeft > 0) { buy(dcaPart, price); dcaLeft--; }
+        if (newMonth && opts.monthly > 0) buy(opts.monthly, price);
+      }
+    } else if (i > start || (start > 0 && i === start)) {
+      const sig = S.signal(i - 1, ind, closes);
+      if (sig !== null && sig !== undefined) target = sig;
+      if (target === 1 && cash >= 0.01) buy(cash, price);
+      else if (target === 0 && qty > 0) sellAll(price);
+    }
+    lastMonth = month;
+
+    const value = cash + qty * candles[i].c;
+    curve.push(value);
+    peak = Math.max(peak, value);
+    if (peak > 0) maxDD = Math.max(maxDD, (peak - value) / peak);
+  }
+  const final = curve[curve.length - 1];
+  return { key, name: S.name, curve, final, invested, gain: final - invested, gainPct: (final / invested - 1) * 100, maxDD: maxDD * 100, fees, trades };
+}
+
+// ===== Interface =====
+const KEYS = Object.keys(STRATEGIES);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const color = i => css(`--series-${i + 1}`);
+const eur = v => v.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
+const pct = v => (v >= 0 ? "+" : "") + v.toFixed(1).replace(".", ",") + " %";
+const $ = id => document.getElementById(id);
+
+function buildControls() {
+  $("strats").innerHTML = KEYS.map((k, i) =>
+    `<label><input type="checkbox" value="${k}" checked><span class="dot" style="background:${color(i)}"></span>${STRATEGIES[k].name}</label>`).join("");
+  $("lesson").innerHTML = KEYS.map((k, i) =>
+    `<div><b><span class="dot" style="background:${color(i)}"></span>${STRATEGIES[k].name}</b>${STRATEGIES[k].short}</div>`).join("");
+}
+
+// Récupère les prix journaliers (Binance, données publiques, sans compte)
+const cache = {};
+async function fetchCandles(symbol, years) {
+  const key = symbol + years;
+  if (cache[key]) return cache[key];
+  const start = Date.now() - years * 365.25 * 864e5 - 200 * 864e5; // +200 jours pour calculer les moyennes
+  let from = start, all = [];
+  while (true) {
+    const url = `https://data-api.binance.vision/api/v3/klines?symbol=${symbol}&interval=1d&startTime=${Math.floor(from)}&limit=1000`;
+    const r = await fetch(url);
+    if (!r.ok) throw new Error("Binance a répondu " + r.status);
+    const rows = await r.json();
+    if (!rows.length) break;
+    all = all.concat(rows.map(k => ({ t: k[0], o: +k[1], c: +k[4] })));
+    if (rows.length < 1000) break;
+    from = rows[rows.length - 1][0] + 864e5;
+  }
+  cache[key] = all;
+  return all;
+}
+
+let chart;
+function drawChart(candles, results) {
+  const labels = candles.map(k => new Date(k.t).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "2-digit" }));
+  const ds = results.map(r => ({
+    label: r.name, data: r.curve.map(v => +v.toFixed(2)),
+    borderColor: color(KEYS.indexOf(r.key)), backgroundColor: color(KEYS.indexOf(r.key)),
+    borderWidth: 2, pointRadius: 0, pointHoverRadius: 5, pointHoverBorderWidth: 2, pointHoverBorderColor: css("--surface-1"), tension: 0,
+  }));
+  if (chart) chart.destroy();
+  chart = new Chart($("chart"), {
+    type: "line",
+    data: { labels, datasets: ds },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: false,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { position: "top", align: "start", labels: { color: css("--text-secondary"), usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8 } },
+        tooltip: { callbacks: { label: c => ` ${c.dataset.label} : ${eur(c.parsed.y)}` }, itemSort: (a, b) => b.parsed.y - a.parsed.y },
+      },
+      scales: {
+        x: { ticks: { color: css("--text-muted"), maxTicksLimit: 8, maxRotation: 0 }, grid: { display: false } },
+        y: { type: $("logscale").checked ? "logarithmic" : "linear",
+             ticks: { color: css("--text-muted"), callback: v => eur(+v) }, grid: { color: css("--line") } },
+      },
+    },
+  });
+}
+
+function cell(v, f) { return `<td class="${v >= 0 ? "pos" : "neg"}">${f(v)}</td>`; }
+
+function drawTable(results, hold) {
+  const sorted = [...results].sort((a, b) => b.final - a.final);
+  $("table").innerHTML = `<tr><th>Stratégie</th><th>Investi</th><th>Valeur finale</th><th>Gain</th><th>Gain %</th><th>Pire chute</th><th>Opérations</th><th>Frais payés</th></tr>` +
+    sorted.map(r => `<tr><td><span class="dot" style="background:${color(KEYS.indexOf(r.key))}"></span> ${r.name}</td>
+      <td>${eur(r.invested)}</td><td>${eur(r.final)}</td>${cell(r.gain, eur)}${cell(r.gainPct, pct)}
+      <td>-${r.maxDD.toFixed(0)} %</td><td>${r.trades}</td><td>${eur(r.fees)}</td></tr>`).join("");
+  const best = sorted[0];
+  let txt = `Meilleure stratégie sur cette période : <b>${best.name}</b> (${pct(best.gainPct)}).`;
+  if (hold && best.key !== "hold") {
+    txt += ` Elle bat « Acheter et garder » de ${(best.gainPct - hold.gainPct).toFixed(1).replace(".", ",")} points.`;
+  }
+  const worstDD = Math.max(...results.map(r => r.maxDD));
+  txt += ` Attention : à un moment, un portefeuille a perdu jusqu'à ${worstDD.toFixed(0)} % de sa valeur. Il faut pouvoir supporter ça sans paniquer.`;
+  $("verdict").innerHTML = txt;
+}
+
+function drawSplit(candles, keys, opts) {
+  const warm = 200, mid = warm + Math.floor((candles.length - warm) / 2);
+  const fmt = t => new Date(t).toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
+  const rowsHtml = keys.map(k => {
+    const ra = runStrategy(k, candles, { ...opts, monthly: 0, start: warm, end: mid });
+    const rb = runStrategy(k, candles, { ...opts, monthly: 0, start: mid });
+    const ok = ra.gainPct > 0 && rb.gainPct > 0;
+    return `<tr><td><span class="dot" style="background:${color(KEYS.indexOf(k))}"></span> ${STRATEGIES[k].name}</td>${cell(ra.gainPct, pct)}${cell(rb.gainPct, pct)}<td>${ok ? "✔ Gagne sur les deux" : "✖ Pas régulier"}</td></tr>`;
+  }).join("");
+  $("split").innerHTML = `<tr><th>Stratégie</th><th>1re moitié (dès ${fmt(candles[warm].t)})</th><th>2e moitié (dès ${fmt(candles[mid].t)})</th><th>Verdict</th></tr>` + rowsHtml;
+}
+
+async function run() {
+  const keys = [...document.querySelectorAll("#strats input:checked")].map(i => i.value);
+  if (!keys.length) { $("status").textContent = "Coche au moins une stratégie."; return; }
+  const opts = { capital: Math.max(1, +$("capital").value || 10), monthly: Math.max(0, +$("monthly").value || 0), feePct: Math.max(0, +$("fee").value || 0) };
+  const years = +$("years").value, symbol = $("asset").value;
+  $("run").disabled = true; $("status").textContent = "Téléchargement des prix…";
+  try {
+    const all = await fetchCandles(symbol, years);
+    const warm = 200;
+    if (all.length < warm + 60) throw new Error("pas assez d'historique pour cette crypto sur cette période. Choisis une période plus courte");
+    const results = keys.map(k => runStrategy(k, all, { ...opts, start: warm }));
+    const period = all.slice(warm);
+    drawChart(period, results);
+    drawTable(results, results.find(r => r.key === "hold"));
+    drawSplit(all, keys, opts);
+    $("results").classList.remove("hidden");
+    const d = t => new Date(t).toLocaleDateString("fr-FR");
+    $("chartTitle").textContent = `Valeur du portefeuille — ${$("asset").selectedOptions[0].text}, du ${d(period[0].t)} au ${d(period.at(-1).t)}`;
+    const short = period.length < years * 360 ? " (cette crypto n'a pas assez d'historique en euros : période raccourcie)" : "";
+    $("status").textContent = `${period.length} jours de prix analysés${short}.`;
+  } catch (e) {
+    $("status").textContent = "Erreur : " + e.message + ". Vérifie ta connexion internet.";
+  } finally { $("run").disabled = false; }
+}
+
+buildControls();
+$("run").addEventListener("click", run);
+$("logscale").addEventListener("change", () => { if (chart) { chart.options.scales.y.type = $("logscale").checked ? "logarithmic" : "linear"; chart.update(); } });
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { buildControls(); if (chart) run(); });
+</script>
+</body>
+</html>
