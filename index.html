@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AK Invest · Bourse et Crypto</title>
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Ays03r7sCPXEcdhRIeR17aA4NeTDhqr9ggVYO4AFpSE=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-l1ntbROYs9YwxXr58Ysm6ijPXSjLkQTldG/8EuSfKuE=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -111,6 +111,13 @@ td:first-child,th:first-child{text-align:left}
 .chg{font-weight:600}.chg.pos{color:var(--good)}.chg.neg{color:var(--bad)}
 .go{padding:6px 12px;font-size:.78rem;border-radius:9px}
 .tabbar{display:none}
+.segs{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);margin-bottom:12px}
+.seg{background:none;box-shadow:none;color:var(--text-secondary);padding:8px 18px;border-radius:10px}
+.seg:hover{transform:none;box-shadow:none;color:var(--text-primary)}
+.seg.on{color:#fff;background:linear-gradient(135deg,rgba(124,92,255,.55),rgba(34,211,238,.35))}
+.cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.cats .chip.on{color:#fff;border-color:rgba(124,92,255,.7);background:rgba(124,92,255,.2)}
+.badge-s{font-size:.7rem;color:var(--text-muted);border:1px solid var(--line-2);border-radius:999px;padding:2px 8px;margin-left:6px}
 #mktTable td:nth-child(2),#mktTable th:nth-child(2){text-align:left}
 .top{box-shadow:0 0 0 100vmax rgba(7,8,13,.72);clip-path:inset(0 -100vmax)}
 @media (max-width:760px){
@@ -186,10 +193,16 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
 
   <section class="view" id="v-marches">
     <div class="sechead"><h1 class="h1s">Marchés</h1></div>
-    <p class="sub">Toutes les cryptos disponibles en euros, triées par volume échangé sur 24 h. Pour les actions et les ETF, utilise la recherche du Simulateur.</p>
+    <div class="segs" id="mktTabs">
+      <button type="button" data-tab="crypto" class="seg on">Cryptos</button>
+      <button type="button" data-tab="action" class="seg">Actions</button>
+      <button type="button" data-tab="etf" class="seg">ETF</button>
+    </div>
+    <div class="cats" id="mktCats"></div>
     <div class="card">
-      <div class="toolbar"><input id="mktFilter" type="search" placeholder="Filtrer : bitcoin, sol…" autocomplete="off" style="max-width:320px"><span class="hint" id="mktInfo"></span></div>
+      <div class="toolbar"><input id="mktFilter" type="search" placeholder="Filtrer dans la liste…" autocomplete="off" style="max-width:320px"><span class="hint" id="mktInfo"></span></div>
       <div class="tablewrap"><table id="mktTable"></table></div>
+      <p class="hint" id="mktNote"></p>
     </div>
   </section>
 
@@ -785,9 +798,71 @@ async function loadMarkets(force) {
 function cryptoAsset(m) { return { type: "c", symbol: m.symbol, base: m.base, label: `${m.name} (${m.base})`, sub: "Crypto · EUR" }; }
 function simulate(m) { pickAsset(cryptoAsset(m)); location.hash = "#simulateur"; }
 function chgSpan(c) { const s = document.createElement("span"); s.className = "chg " + (c >= 0 ? "pos" : "neg"); s.textContent = (c >= 0 ? "+" : "") + c.toFixed(2).replace(".", ",") + " %"; return s; }
+// ----- Catégories -----
+const CRYPTO_CATS = {
+  "Grandes cryptos": ["BTC", "ETH", "XRP", "BNB", "SOL"],
+  "Blockchains (Layer 1)": ["ETH", "SOL", "ADA", "AVAX", "DOT", "NEAR", "SUI", "TON", "TRX", "APT", "ATOM", "ALGO", "XLM", "HBAR", "ICP", "SEI"],
+  "Layer 2": ["ARB", "OP", "POL", "MATIC", "IMX", "STRK", "MNT"],
+  "Finance décentralisée (DeFi)": ["LINK", "UNI", "AAVE", "MKR", "LDO", "CRV", "COMP", "SNX", "INJ", "JUP", "PENDLE", "ENA"],
+  "Intelligence artificielle": ["FET", "RENDER", "TAO", "AGIX", "GRT", "WLD", "AR"],
+  "Memecoins": ["DOGE", "SHIB", "PEPE", "BONK", "WIF", "FLOKI", "TRUMP"],
+  "Jeux et métavers": ["SAND", "MANA", "AXS", "GALA", "ENJ", "APE"],
+  "Paiement": ["LTC", "BCH", "XRP", "XLM"],
+};
+const STOCKS = [
+  // [catégorie, symbole, code Bourse, nom, Bourse, devise]
+  ["Technologie", "AAPL", "XNGS", "Apple", "NASDAQ", "USD"], ["Technologie", "MSFT", "XNGS", "Microsoft", "NASDAQ", "USD"],
+  ["Technologie", "NVDA", "XNGS", "Nvidia", "NASDAQ", "USD"], ["Technologie", "GOOGL", "XNGS", "Alphabet (Google)", "NASDAQ", "USD"],
+  ["Technologie", "META", "XNGS", "Meta", "NASDAQ", "USD"], ["Technologie", "AMD", "XNGS", "AMD", "NASDAQ", "USD"],
+  ["Technologie", "ASML", "XAMS", "ASML", "Euronext Amsterdam", "EUR"], ["Technologie", "CAP", "XPAR", "Capgemini", "Euronext Paris", "EUR"],
+  ["Luxe et consommation", "MC", "XPAR", "LVMH", "Euronext Paris", "EUR"], ["Luxe et consommation", "RMS", "XPAR", "Hermès", "Euronext Paris", "EUR"],
+  ["Luxe et consommation", "OR", "XPAR", "L'Oréal", "Euronext Paris", "EUR"], ["Luxe et consommation", "AMZN", "XNGS", "Amazon", "NASDAQ", "USD"],
+  ["Luxe et consommation", "KO", "XNYS", "Coca-Cola", "NYSE", "USD"], ["Luxe et consommation", "MCD", "XNYS", "McDonald's", "NYSE", "USD"],
+  ["Luxe et consommation", "NKE", "XNYS", "Nike", "NYSE", "USD"],
+  ["Énergie", "TTE", "XPAR", "TotalEnergies", "Euronext Paris", "EUR"], ["Énergie", "XOM", "XNYS", "ExxonMobil", "NYSE", "USD"],
+  ["Énergie", "CVX", "XNYS", "Chevron", "NYSE", "USD"], ["Énergie", "NEE", "XNYS", "NextEra Energy (renouvelable)", "NYSE", "USD"],
+  ["Santé", "SAN", "XPAR", "Sanofi", "Euronext Paris", "EUR"], ["Santé", "LLY", "XNYS", "Eli Lilly", "NYSE", "USD"],
+  ["Santé", "JNJ", "XNYS", "Johnson & Johnson", "NYSE", "USD"], ["Santé", "NVO", "XNYS", "Novo Nordisk", "NYSE", "USD"],
+  ["Finance", "BNP", "XPAR", "BNP Paribas", "Euronext Paris", "EUR"], ["Finance", "JPM", "XNYS", "JPMorgan", "NYSE", "USD"],
+  ["Finance", "V", "XNYS", "Visa", "NYSE", "USD"], ["Finance", "MA", "XNYS", "Mastercard", "NYSE", "USD"],
+  ["Automobile", "TSLA", "XNGS", "Tesla", "NASDAQ", "USD"], ["Automobile", "RNO", "XPAR", "Renault", "Euronext Paris", "EUR"],
+  ["Automobile", "STLAP", "XPAR", "Stellantis", "Euronext Paris", "EUR"], ["Automobile", "TM", "XNYS", "Toyota", "NYSE", "USD"],
+  ["Industrie et défense", "AIR", "XPAR", "Airbus", "Euronext Paris", "EUR"], ["Industrie et défense", "SAF", "XPAR", "Safran", "Euronext Paris", "EUR"],
+  ["Industrie et défense", "BA", "XNYS", "Boeing", "NYSE", "USD"], ["Industrie et défense", "CAT", "XNYS", "Caterpillar", "NYSE", "USD"],
+];
+const ETFS = [
+  ["Monde", "URTH", "ARCX", "iShares MSCI World", "NYSE Arca", "USD"], ["Monde", "VT", "ARCX", "Vanguard Total World", "NYSE Arca", "USD"],
+  ["États-Unis", "SPY", "ARCX", "SPDR S&P 500", "NYSE Arca", "USD"], ["États-Unis", "QQQ", "XNGS", "Invesco Nasdaq 100", "NASDAQ", "USD"],
+  ["États-Unis", "VTI", "ARCX", "Vanguard Total US", "NYSE Arca", "USD"],
+  ["Europe", "VGK", "ARCX", "Vanguard FTSE Europe", "NYSE Arca", "USD"], ["Europe", "EZU", "BATS", "iShares MSCI Zone euro", "Cboe", "USD"],
+  ["Pays émergents", "EEM", "ARCX", "iShares MSCI Emerging", "NYSE Arca", "USD"], ["Pays émergents", "VWO", "ARCX", "Vanguard Emerging", "NYSE Arca", "USD"],
+  ["Secteurs", "XLK", "ARCX", "Technologie US", "NYSE Arca", "USD"], ["Secteurs", "XLV", "ARCX", "Santé US", "NYSE Arca", "USD"],
+  ["Secteurs", "ICLN", "XNGS", "Énergie propre", "NASDAQ", "USD"],
+  ["Or et matières premières", "GLD", "ARCX", "SPDR Gold (or)", "NYSE Arca", "USD"], ["Or et matières premières", "SLV", "ARCX", "iShares Silver (argent)", "NYSE Arca", "USD"],
+  ["Obligations", "AGG", "ARCX", "iShares obligations US", "NYSE Arca", "USD"], ["Obligations", "TLT", "XNGS", "Obligations d'État US 20 ans", "NASDAQ", "USD"],
+];
+let mktTab = "crypto", mktCat = "Toutes";
+function catsFor(tab) {
+  if (tab === "crypto") return ["Toutes", ...Object.keys(CRYPTO_CATS), "Autres"];
+  const list = tab === "action" ? STOCKS : ETFS;
+  return ["Toutes", ...new Set(list.map(x => x[0]))];
+}
+function renderCats() {
+  $("mktCats").innerHTML = "";
+  catsFor(mktTab).forEach(c => { const b = document.createElement("button"); b.type = "button"; b.className = "chip" + (c === mktCat ? " on" : ""); b.textContent = c;
+    b.addEventListener("click", () => { mktCat = c; renderCats(); renderMarkets(); }); $("mktCats").appendChild(b); });
+}
+document.querySelectorAll("#mktTabs .seg").forEach(b => b.addEventListener("click", () => {
+  mktTab = b.dataset.tab; mktCat = "Toutes";
+  document.querySelectorAll("#mktTabs .seg").forEach(x => x.classList.toggle("on", x === b));
+  renderCats(); renderMarkets();
+}));
+function stockAsset(x, isEtf) { return { type: "s", symbol: x[1], mic: x[2], label: `${x[3]} (${x[1]})`, sub: `${isEtf ? "ETF" : "Action"} · ${x[4]} · ${x[5]}`, flag: x[5] === "EUR" ? "EU" : "US" }; }
+function simBtn(fn) { const b = document.createElement("button"); b.type = "button"; b.className = "go"; b.textContent = "Simuler"; b.addEventListener("click", fn); return b; }
+
 function renderMarkets() {
-  const t = new Date(marketAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
-  $("liveTime").textContent = "Mis à jour à " + t; $("mktInfo").textContent = `${market.length} cryptos · mis à jour à ${t}`;
+  const t = marketAt ? new Date(marketAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "";
+  if (t) $("liveTime").textContent = "Mis à jour à " + t;
   // tuiles de l'accueil
   $("tiles").innerHTML = "";
   ["BTC", "ETH", "SOL", "XRP"].map(b => market.find(m => m.base === b)).filter(Boolean).forEach(m => {
@@ -800,20 +875,31 @@ function renderMarkets() {
   const mini = (id, list) => { $(id).innerHTML = ""; list.forEach(m => { const r = document.createElement("div"); r.className = "row"; const a = document.createElement("span"); a.textContent = `${m.name} (${m.base})`; r.append(a, chgSpan(m.chg)); r.addEventListener("click", () => simulate(m)); $(id).appendChild(r); }); };
   mini("gainers", [...liquid].sort((a, b) => b.chg - a.chg).slice(0, 5));
   mini("losers", [...liquid].sort((a, b) => a.chg - b.chg).slice(0, 5));
-  // tableau des marchés
+
+  // tableau des marchés selon l'onglet et la catégorie
   const q = ($("mktFilter").value || "").toLowerCase();
-  const tb = $("mktTable"); tb.innerHTML = "<tr><th>#</th><th>Crypto</th><th>Prix</th><th>24 h</th><th>Volume 24 h</th><th></th></tr>";
-  market.filter(m => !q || (m.name + " " + m.base).toLowerCase().includes(q)).slice(0, 100).forEach((m, i) => {
-    const tr = document.createElement("tr");
-    const cells = [String(i + 1), `${m.name} (${m.base})`, priceFmt(m.price), null, volFmt(m.vol), null];
-    cells.forEach((c, k) => { const td = document.createElement("td");
-      if (k === 3) td.appendChild(chgSpan(m.chg));
-      else if (k === 5) { const b = document.createElement("button"); b.type = "button"; b.className = "go"; b.textContent = "Simuler"; b.addEventListener("click", () => simulate(m)); td.appendChild(b); }
-      else td.textContent = c;
-      tr.appendChild(td); });
-    tb.appendChild(tr);
-  });
+  const tb = $("mktTable");
+  const addRow = cells => { const tr = document.createElement("tr"); cells.forEach(c => { const td = document.createElement("td"); if (c instanceof Node) td.appendChild(c); else td.textContent = c; tr.appendChild(td); }); tb.appendChild(tr); };
+  if (mktTab === "crypto") {
+    const known = new Set(Object.values(CRYPTO_CATS).flat());
+    let list = market;
+    if (mktCat === "Autres") list = list.filter(m => !known.has(m.base));
+    else if (mktCat !== "Toutes") list = list.filter(m => CRYPTO_CATS[mktCat].includes(m.base));
+    list = list.filter(m => !q || (m.name + " " + m.base).toLowerCase().includes(q));
+    tb.innerHTML = "<tr><th>#</th><th>Crypto</th><th>Prix</th><th>24 h</th><th>Volume 24 h</th><th></th></tr>";
+    list.slice(0, 150).forEach((m, i) => addRow([String(i + 1), `${m.name} (${m.base})`, priceFmt(m.price), chgSpan(m.chg), volFmt(m.vol), simBtn(() => simulate(m))]));
+    $("mktInfo").textContent = `${list.length} cryptos` + (t ? ` · mis à jour à ${t}` : "");
+    $("mktNote").textContent = "Prix en euros en direct (Binance), mis à jour toutes les minutes.";
+  } else {
+    const isEtf = mktTab === "etf";
+    const list = (isEtf ? ETFS : STOCKS).filter(x => (mktCat === "Toutes" || x[0] === mktCat) && (!q || (x[3] + " " + x[1]).toLowerCase().includes(q)));
+    tb.innerHTML = `<tr><th>#</th><th>${isEtf ? "ETF" : "Entreprise"}</th><th>Catégorie</th><th>Bourse</th><th>Devise</th><th></th></tr>`;
+    list.forEach((x, i) => addRow([String(i + 1), `${x[3]} (${x[1]})`, x[0], x[4], x[5], simBtn(() => { pickAsset(stockAsset(x, isEtf)); location.hash = "#simulateur"; })]));
+    $("mktInfo").textContent = `${list.length} ${isEtf ? "ETF" : "entreprises"}`;
+    $("mktNote").textContent = "Sélection des valeurs les plus connues. Pour toutes les autres, utilise la recherche du Simulateur. Avec le plan gratuit Twelve Data, les cotations hors États-Unis (Paris, Amsterdam…) peuvent être refusées.";
+  }
 }
+renderCats();
 $("mktFilter").addEventListener("input", renderMarkets);
 setInterval(() => { if (["#accueil", "#marches", ""].includes(location.hash)) loadMarkets(true); }, 60000);
 showView();
