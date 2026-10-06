@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AK Invest · Bourse et Crypto</title>
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Sx6Wi173+CBKkR0gzfaOjKn3m6Oyg81W9+Otzzkqb5c=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-NA9KMoO1FBW3lbZquy93i7LZhv6sivHgPTG4PL8x+1Y=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,6 +90,23 @@ td:first-child,th:first-child{text-align:left}
 .verdict b{color:var(--text-primary)}
 .foot{font-size:.78rem;color:var(--text-muted)}
 .hidden{display:none}
+.pick{grid-column:span 2;min-width:0}
+@media (max-width:600px){.pick{grid-column:auto}}
+.searchbox{position:relative}
+.suggest{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 6px);max-height:360px;overflow:auto;border:1px solid var(--line-2);border-radius:14px;background:#10121c;box-shadow:0 20px 50px -10px rgba(0,0,0,.8)}
+.sg{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:0;background:none;box-shadow:none;color:var(--text-primary);text-align:left;font:inherit;cursor:pointer;transform:none}
+.sg:hover,.sg.on{background:rgba(124,92,255,.15);filter:none;transform:none;box-shadow:none}
+.sg .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font:700 .7rem "Space Grotesk",sans-serif;background:linear-gradient(135deg,rgba(124,92,255,.35),rgba(34,211,238,.25));flex:none}
+.sg .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sg .nm small{display:block;color:var(--text-muted);font-size:.75rem}
+.sg .ty{font-size:.7rem;color:var(--text-secondary);border:1px solid var(--line-2);border-radius:999px;padding:2px 8px;white-space:nowrap}
+.sgh{padding:8px 12px 4px;font-size:.68rem;text-transform:uppercase;letter-spacing:.9px;color:var(--text-muted)}
+.picked{margin-top:8px;font-size:.82rem;color:var(--text-secondary);min-height:1.2em}
+.picked b{color:var(--text-primary)}
+.popular{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;font-size:.8rem;color:var(--text-muted)}
+#chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);background:rgba(0,0,0,.25);color:var(--text-secondary);font:500 .8rem Inter,sans-serif;box-shadow:none}
+.chip:hover{color:var(--text-primary);border-color:rgba(255,255,255,.3);transform:none;box-shadow:none}
 .trade summary{list-style:none;cursor:pointer}.trade summary::-webkit-details-marker{display:none}
 .trade summary h2::after{content:"▾";float:right;color:var(--text-muted)}
 .trade[open] summary h2::after{content:"▴"}
@@ -120,35 +137,13 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
 
   <div class="card">
     <div class="controls">
-      <div><label for="asset">Actif</label>
-        <select id="asset">
-          <optgroup label="Cryptos (gratuit, sans clé)">
-          <option value="c:BTCEUR">Bitcoin (BTC)</option>
-          <option value="c:ETHEUR">Ethereum (ETH)</option>
-          <option value="c:SOLEUR">Solana (SOL)</option>
-          <option value="c:XRPEUR">XRP</option>
-          <option value="c:BNBEUR">BNB</option>
-          <option value="c:ADAEUR">Cardano (ADA)</option>
-          <option value="c:DOGEEUR">Dogecoin (DOGE)</option>
-          </optgroup>
-          <optgroup label="ETF (clé Twelve Data)">
-          <option value="s:SPY">S&amp;P 500 (SPY)</option>
-          <option value="s:URTH">MSCI World (URTH)</option>
-          <option value="s:QQQ">Nasdaq 100 (QQQ)</option>
-          <option value="s:VT">Monde entier (VT)</option>
-          </optgroup>
-          <optgroup label="Actions US (clé Twelve Data)">
-          <option value="s:AAPL">Apple (AAPL)</option>
-          <option value="s:MSFT">Microsoft (MSFT)</option>
-          <option value="s:NVDA">Nvidia (NVDA)</option>
-          <option value="s:AMZN">Amazon (AMZN)</option>
-          <option value="s:GOOGL">Google (GOOGL)</option>
-          <option value="s:META">Meta (META)</option>
-          <option value="s:TSLA">Tesla (TSLA)</option>
-          </optgroup>
-          <option value="custom">Autre symbole…</option>
-        </select></div>
-      <div id="customBox" class="hidden"><label for="custom">Symbole (ex. KO, DIS)</label><input id="custom" type="text" placeholder="KO" autocomplete="off"></div>
+      <div class="pick"><label for="search">Actif</label>
+        <div class="searchbox">
+          <input id="search" type="search" placeholder="Rechercher : Apple, LVMH, Bitcoin, MSCI World…" autocomplete="off" spellcheck="false">
+          <div id="suggest" class="suggest hidden" role="listbox"></div>
+        </div>
+        <div id="picked" class="picked"></div>
+      </div>
       <div><label for="years">Période</label>
         <select id="years"><option value="1">1 an</option><option value="2">2 ans</option><option value="3" selected>3 ans</option><option value="5">5 ans</option></select></div>
       <div><label for="capital">Mise de départ (€)</label><input id="capital" type="number" min="1" step="1" value="10"></div>
@@ -156,6 +151,7 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
       <div><label for="fee">Frais par opération (%)</label><input id="fee" type="number" min="0" step="0.1" value="1"></div>
       <div><button id="run">Lancer la simulation</button></div>
     </div>
+    <div class="popular"><span>Populaires :</span><div id="chips"></div></div>
     <div id="keyBox" class="hidden keybox">
       <label for="apikey">Clé API Twelve Data (pour les actions et ETF)</label>
       <div class="keyrow"><input id="apikey" type="password" placeholder="Colle ta clé ici" autocomplete="off"><button id="saveKey" type="button">Enregistrer</button><button id="delKey" type="button" class="ghost">Effacer</button></div>
@@ -359,19 +355,87 @@ function buildControls() {
 function getKey() { try { return localStorage.getItem("td_key") || ""; } catch (e) { return ""; } }
 function setKey(v) { try { localStorage.setItem("td_key", v); } catch (e) {} }
 
-function currentAsset() {
-  const v = $("asset").value;
-  if (v === "custom") {
-    const s = ($("custom").value || "").trim().toUpperCase();
-    return { type: "s", symbol: s, label: s };
+// ----- Choix de l'actif : recherche comme sur une vraie plateforme -----
+let selected = { type: "c", symbol: "BTCEUR", label: "Bitcoin (BTC)", sub: "Crypto · Binance · EUR" };
+const POPULAR = [
+  { type: "c", symbol: "BTCEUR", label: "Bitcoin (BTC)", sub: "Crypto · EUR" },
+  { type: "c", symbol: "ETHEUR", label: "Ethereum (ETH)", sub: "Crypto · EUR" },
+  { type: "s", symbol: "URTH", mic: "ARCX", label: "MSCI World (URTH)", sub: "ETF · NYSE Arca · USD" },
+  { type: "s", symbol: "SPY", mic: "ARCX", label: "S&P 500 (SPY)", sub: "ETF · NYSE Arca · USD" },
+  { type: "s", symbol: "AAPL", mic: "XNGS", label: "Apple (AAPL)", sub: "Action · NASDAQ · USD" },
+  { type: "s", symbol: "NVDA", mic: "XNGS", label: "Nvidia (NVDA)", sub: "Action · NASDAQ · USD" },
+  { type: "s", symbol: "MC", mic: "XPAR", label: "LVMH (MC)", sub: "Action · Euronext Paris · EUR" },
+  { type: "s", symbol: "TTE", mic: "XPAR", label: "TotalEnergies (TTE)", sub: "Action · Euronext Paris · EUR" },
+];
+function currentAsset() { return selected; }
+function pickAsset(a) {
+  selected = a;
+  $("search").value = "";
+  $("suggest").classList.add("hidden");
+  $("picked").innerHTML = "";
+  const b = document.createElement("b"); b.textContent = a.label;
+  $("picked").append("Sélectionné : ", b, " — " + (a.sub || ""));
+  updateForm();
+}
+function updateForm() { $("keyBox").classList.toggle("hidden", selected.type === "c"); }
+
+// Liste de toutes les cryptos en euros (Binance, données publiques)
+let cryptoList = null;
+const CRYPTO_NAMES = { BTC: "Bitcoin", ETH: "Ethereum", SOL: "Solana", XRP: "XRP", BNB: "BNB", ADA: "Cardano", DOGE: "Dogecoin", DOT: "Polkadot", LINK: "Chainlink", AVAX: "Avalanche", LTC: "Litecoin", TRX: "Tron", SHIB: "Shiba Inu", PEPE: "Pepe", NEAR: "Near", SUI: "Sui", TON: "Toncoin" };
+async function loadCryptos() {
+  if (cryptoList) return cryptoList;
+  const all = await fetch("https://data-api.binance.vision/api/v3/ticker/price").then(r => r.json());
+  cryptoList = all.filter(t => t.symbol.endsWith("EUR") && !/^(EUR|USDT|USDC|FDUSD)/.test(t.symbol)).map(t => {
+    const base = t.symbol.slice(0, -3);
+    return { type: "c", symbol: t.symbol, label: `${CRYPTO_NAMES[base] || base} (${base})`, sub: "Crypto · EUR", base };
+  });
+  return cryptoList;
+}
+const TYPES = { "Common Stock": "Action", "ETF": "ETF", "Depositary Receipt": "Action (certificat)", "REIT": "Immobilier coté" };
+const FLAGS = { "United States": "US", "France": "FR", "Germany": "DE", "Netherlands": "NL", "Italy": "IT", "Spain": "ES", "United Kingdom": "UK", "Switzerland": "CH", "Belgium": "BE", "Japan": "JP", "Canada": "CA" };
+const COUNTRY_RANK = { "United States": 0, "France": 1, "Germany": 2, "Netherlands": 2, "United Kingdom": 3 };
+async function searchStocks(q) {
+  const j = await fetch(`https://api.twelvedata.com/symbol_search?symbol=${encodeURIComponent(q)}&outputsize=60`, { referrerPolicy: "no-referrer", credentials: "omit" }).then(r => r.json());
+  return (j.data || []).filter(d => TYPES[d.instrument_type])
+    .sort((a, b) => ((a.instrument_type === "Depositary Receipt") - (b.instrument_type === "Depositary Receipt")) || ((COUNTRY_RANK[a.country] ?? 9) - (COUNTRY_RANK[b.country] ?? 9)))
+    .slice(0, 12)
+    .map(d => ({ type: "s", symbol: d.symbol, mic: d.mic_code, label: `${d.instrument_name} (${d.symbol})`,
+      sub: `${TYPES[d.instrument_type]} · ${d.exchange} · ${d.currency}`, flag: FLAGS[d.country] || (d.country || "").slice(0, 2).toUpperCase() }));
+}
+function renderSuggest(groups) {
+  const box = $("suggest"); box.innerHTML = "";
+  let n = 0;
+  for (const [title, items] of groups) {
+    if (!items.length) continue;
+    const h = document.createElement("div"); h.className = "sgh"; h.textContent = title; box.appendChild(h);
+    for (const it of items) {
+      const b = document.createElement("button"); b.type = "button"; b.className = "sg";
+      const ic = document.createElement("span"); ic.className = "ic"; ic.textContent = it.type === "c" ? it.base.slice(0, 4) : it.flag;
+      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = it.label;
+      const sm = document.createElement("small"); sm.textContent = it.sub; nm.appendChild(sm);
+      b.append(ic, nm); b.addEventListener("click", () => pickAsset(it)); box.appendChild(b); n++;
+    }
   }
-  return { type: v[0], symbol: v.slice(2), label: $("asset").selectedOptions[0].text };
+  if (!n) { const h = document.createElement("div"); h.className = "sgh"; h.textContent = "Aucun résultat"; box.appendChild(h); }
+  box.classList.remove("hidden");
 }
-function updateForm() {
-  const v = $("asset").value;
-  $("customBox").classList.toggle("hidden", v !== "custom");
-  $("keyBox").classList.toggle("hidden", v.startsWith("c:"));
-}
+let searchTimer, searchSeq = 0;
+$("search").addEventListener("input", () => {
+  clearTimeout(searchTimer);
+  const q = $("search").value.trim();
+  if (q.length < 2) { $("suggest").classList.add("hidden"); return; }
+  searchTimer = setTimeout(async () => {
+    const seq = ++searchSeq;
+    const ql = q.toLowerCase();
+    const [cr, st] = await Promise.all([
+      loadCryptos().then(l => l.filter(c => c.label.toLowerCase().includes(ql)).slice(0, 6)).catch(() => []),
+      searchStocks(q).catch(() => []),
+    ]);
+    if (seq === searchSeq) renderSuggest([["Cryptos", cr], ["Actions et ETF", st]]);
+  }, 300);
+});
+document.addEventListener("click", e => { if (!e.target.closest(".searchbox")) $("suggest").classList.add("hidden"); });
+POPULAR.forEach(p => { const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = p.label.replace(/ \(.*/, ""); b.addEventListener("click", () => pickAsset(p)); $("chips").appendChild(b); });
 
 const cache = {};
 // Cryptos : Binance (données publiques, sans compte)
@@ -390,21 +454,25 @@ async function fetchCrypto(symbol, start) {
   return all;
 }
 // Actions et ETF : Twelve Data (clé gratuite)
-async function fetchStock(symbol, start) {
+async function fetchStock(symbol, start, mic) {
   const key = getKey();
   if (!key) throw new Error("colle d'abord ta clé API Twelve Data et clique sur « Enregistrer »");
   const d = new Date(start).toISOString().slice(0, 10);
-  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&start_date=${d}&outputsize=5000&order=asc`;
+  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&start_date=${d}&outputsize=5000&order=asc${mic ? "&mic_code=" + encodeURIComponent(mic) : ""}`;
   // la clé passe dans l'en-tête, pas dans l'adresse : elle n'apparaît pas dans l'historique ni dans les journaux
   const j = await fetch(url, { headers: { Authorization: "apikey " + key }, referrerPolicy: "no-referrer", credentials: "omit" }).then(r => r.json());
-  if (j.status !== "ok") throw new Error("Twelve Data : " + (j.message || "réponse inconnue"));
+  if (j.status !== "ok") {
+    const m = j.message || "réponse inconnue";
+    if (/plan|upgrade|grow|pro\b/i.test(m)) throw new Error("cet actif n'est pas inclus dans ton plan gratuit Twelve Data (souvent le cas hors États-Unis). Message : " + m.replace(/\.$/, ""));
+    throw new Error("Twelve Data : " + m);
+  }
   return j.values.map(v => ({ t: Date.parse(v.datetime + "T00:00:00Z"), o: +v.open, c: +v.close }));
 }
 async function fetchCandles(asset, years) {
-  const key = asset.type + asset.symbol + years;
+  const key = asset.type + asset.symbol + (asset.mic || "") + years;
   if (cache[key]) return cache[key];
   const start = Date.now() - years * 365.25 * 864e5 - 300 * 864e5; // marge pour calculer les moyennes (la Bourse ferme le week-end)
-  const all = asset.type === "c" ? await fetchCrypto(asset.symbol, start) : await fetchStock(asset.symbol, start);
+  const all = asset.type === "c" ? await fetchCrypto(asset.symbol, start) : await fetchStock(asset.symbol, start, asset.mic);
   cache[key] = all;
   return all;
 }
@@ -480,7 +548,7 @@ async function run() {
   if (!keys.length) { $("status").textContent = "Coche au moins une stratégie."; return; }
   const opts = { capital: Math.max(1, +$("capital").value || 10), monthly: Math.max(0, +$("monthly").value || 0), feePct: Math.max(0, +$("fee").value || 0) };
   const years = +$("years").value, asset = currentAsset();
-  if (!/^[A-Z0-9.\-]{1,12}$/.test(asset.symbol)) { $("status").textContent = "Écris un symbole d'action valide (ex. KO) : lettres, chiffres, point ou tiret."; return; }
+  if (!/^[A-Z0-9.\-]{1,15}$/.test(asset.symbol)) { $("status").textContent = "Choisis un actif dans la recherche."; return; }
   $("run").disabled = true; $("status").textContent = "Téléchargement des prix…";
   try {
     const all = await fetchCandles(asset, years);
@@ -508,8 +576,7 @@ buildControls();
 $("apikey").value = getKey();
 $("delKey").addEventListener("click", () => { try { localStorage.removeItem("td_key"); } catch (e) {} $("apikey").value = ""; $("status").textContent = "Clé effacée de ce navigateur."; });
 $("saveKey").addEventListener("click", () => { setKey($("apikey").value.trim()); $("status").textContent = "Clé enregistrée dans ce navigateur."; });
-$("asset").addEventListener("change", updateForm);
-updateForm();
+pickAsset(selected);
 $("run").addEventListener("click", run);
 $("logscale").addEventListener("change", () => { if (chart) { chart.options.scales.y.type = $("logscale").checked ? "logarithmic" : "linear"; chart.update(); } });
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { buildControls(); if (chart) run(); });
