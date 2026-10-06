@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Simulateur Bourse et Crypto</title>
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-9x/DjwKbsnX0e4McuOoJaccwkCU8cgCXzYiR2ktBocc=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Sx6Wi173+CBKkR0gzfaOjKn3m6Oyg81W9+Otzzkqb5c=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,6 +90,17 @@ td:first-child,th:first-child{text-align:left}
 .verdict b{color:var(--text-primary)}
 .foot{font-size:.78rem;color:var(--text-muted)}
 .hidden{display:none}
+.trade summary{list-style:none;cursor:pointer}.trade summary::-webkit-details-marker{display:none}
+.trade summary h2::after{content:"▾";float:right;color:var(--text-muted)}
+.trade[open] summary h2::after{content:"▴"}
+.tag{font:600 .7rem Inter,sans-serif;color:#ffb4bf;border:1px solid rgba(255,107,125,.4);background:rgba(255,107,125,.1);border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+.tradebody{margin-top:14px}
+.warn{color:#ffcf8a}
+.balances{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.balances span{border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;font-size:.85rem;background:rgba(0,0,0,.25);font-variant-numeric:tabular-nums}
+.confirm{margin-top:14px;padding:14px;border-radius:14px;border:1px solid rgba(255,107,125,.4);background:rgba(255,107,125,.07)}
+button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10px 30px -8px rgba(255,90,110,.6)}
+.h3{font:600 .95rem "Space Grotesk",sans-serif;margin:18px 0 8px}
 #results{animation:fade .5s ease}
 @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (max-width:600px){.card{padding:16px}.chartbox{height:300px}.top{margin-bottom:24px}}
@@ -153,6 +164,34 @@ td:first-child,th:first-child{text-align:left}
     <div class="strats" id="strats"></div>
     <div id="status"></div>
   </div>
+
+  <details class="card trade" id="tradeCard">
+    <summary><h2>Trading réel <span class="tag">Kraken · argent réel</span></h2></summary>
+    <div class="tradebody">
+      <p class="hint warn">Ordres réels avec ton argent. Chaque ordre est d'abord vérifié par Kraken, puis tu dois confirmer. Le relais doit être lancé sur ton PC.</p>
+      <div class="keyrow">
+        <input id="relayCode" type="password" placeholder="Code d'accès du relais (affiché au lancement)" autocomplete="off">
+        <button id="relayConnect" type="button">Se connecter</button>
+      </div>
+      <div id="relayStatus" class="hint"></div>
+      <div id="tradeForm" class="hidden">
+        <div class="balances" id="balances"></div>
+        <div class="controls" style="margin-top:14px">
+          <div><label for="tCrypto">Crypto</label><select id="tCrypto"><option value="BTC">Bitcoin (BTC)</option><option value="ETH">Ethereum (ETH)</option><option value="SOL">Solana (SOL)</option></select></div>
+          <div><label for="tSide">Sens</label><select id="tSide"><option value="achat">Acheter</option><option value="vente">Vendre</option></select></div>
+          <div><label for="tAmount">Montant (€)</label><input id="tAmount" type="number" min="1" step="1" value="10"></div>
+          <div><button id="tCheck" type="button">Vérifier l'ordre</button></div>
+        </div>
+        <div id="tConfirm" class="confirm hidden">
+          <div id="tSummary"></div>
+          <div class="keyrow" style="margin-top:12px"><button id="tGo" type="button" class="danger">Confirmer l'ordre réel</button><button id="tCancel" type="button" class="ghost">Annuler</button></div>
+        </div>
+        <div id="tResult" class="hint"></div>
+        <h3 class="h3">Historique des ordres réels</h3>
+        <div class="tablewrap"><table id="tHistory"></table></div>
+      </div>
+    </div>
+  </details>
 
   <div id="results" class="hidden">
     <div class="kpis">
@@ -474,6 +513,78 @@ updateForm();
 $("run").addEventListener("click", run);
 $("logscale").addEventListener("change", () => { if (chart) { chart.options.scales.y.type = $("logscale").checked ? "logarithmic" : "linear"; chart.update(); } });
 matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { buildControls(); if (chart) run(); });
+
+// ===== Trading réel via le relais local (Kraken) =====
+const RELAY = "http://127.0.0.1:3737";
+function getCode() { try { return localStorage.getItem("relay_code") || ""; } catch (e) { return ""; } }
+function setCode(v) { try { localStorage.setItem("relay_code", v); } catch (e) {} }
+async function relay(pathname, body) {
+  const opt = { headers: { "X-Code-Acces": $("relayCode").value.trim() } };
+  if (body) { opt.method = "POST"; opt.headers["Content-Type"] = "application/json"; opt.body = JSON.stringify(body); }
+  let r;
+  try { r = await fetch(RELAY + pathname, opt); }
+  catch (e) { throw new Error("relais injoignable. Lance « node relais-kraken.js » sur ton PC"); }
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.erreur || "erreur " + r.status);
+  return j;
+}
+const NAMES = { ZEUR: "EUR", XXBT: "BTC", XETH: "ETH", SOL: "SOL" };
+async function relayConnect() {
+  $("relayStatus").textContent = "Connexion…";
+  try {
+    const j = await relay("/etat");
+    setCode($("relayCode").value.trim());
+    $("relayStatus").textContent = `Connecté à Kraken. Plafond : ${eur(j.maxEur)} par ordre.`;
+    const sold = Object.entries(j.soldes).filter(([, v]) => +v > 0);
+    $("balances").innerHTML = "";
+    (sold.length ? sold : [["ZEUR", "0"]]).forEach(([k, v]) => {
+      const s = document.createElement("span");
+      s.textContent = `${NAMES[k] || k} : ${(+v).toLocaleString("fr-FR", { maximumFractionDigits: 8 })}`;
+      $("balances").appendChild(s);
+    });
+    $("tAmount").max = j.maxEur;
+    $("tradeForm").classList.remove("hidden");
+    loadHistory();
+  } catch (e) { $("relayStatus").textContent = "Erreur : " + e.message + "."; }
+}
+let pending = null;
+async function checkOrder() {
+  $("tResult").textContent = ""; $("tConfirm").classList.add("hidden");
+  pending = { crypto: $("tCrypto").value, sens: $("tSide").value, montantEur: +$("tAmount").value };
+  try {
+    const j = await relay("/ordre", { ...pending, verifierSeulement: true });
+    $("tSummary").textContent = `${pending.sens === "achat" ? "Acheter" : "Vendre"} pour ${eur(pending.montantEur)} de ${pending.crypto}, au prix du marché (environ ${eur(j.prixEstime)} l'unité). Kraken a validé l'ordre : « ${j.description} ». Des frais Kraken s'ajoutent.`;
+    $("tConfirm").classList.remove("hidden");
+  } catch (e) { $("tResult").textContent = "Ordre refusé : " + e.message + "."; pending = null; }
+}
+async function sendOrder() {
+  if (!pending) return;
+  $("tGo").disabled = true;
+  try {
+    const j = await relay("/ordre", { ...pending, verifierSeulement: false });
+    $("tResult").textContent = `Ordre envoyé. Numéro Kraken : ${(j.txid || []).join(", ")}.`;
+    $("tConfirm").classList.add("hidden"); pending = null;
+    relayConnect();
+  } catch (e) { $("tResult").textContent = "Échec : " + e.message + "."; }
+  finally { $("tGo").disabled = false; }
+}
+async function loadHistory() {
+  try {
+    const j = await relay("/historique");
+    const t = $("tHistory"); t.innerHTML = "<tr><th>Date</th><th>Crypto</th><th>Sens</th><th>Montant</th><th>N° Kraken</th></tr>";
+    if (!j.ordres.length) { t.insertAdjacentHTML("beforeend", "<tr><td colspan='5'>Aucun ordre réel pour l'instant.</td></tr>"); return; }
+    j.ordres.forEach(o => {
+      const tr = document.createElement("tr");
+      [new Date(o.date).toLocaleString("fr-FR"), o.crypto, o.sens, eur(o.montantEur), (o.txid || []).join(", ")].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
+      t.appendChild(tr);
+    });
+  } catch (e) {}
+}
+$("relayCode").value = getCode();
+$("relayConnect").addEventListener("click", relayConnect);
+$("tCheck").addEventListener("click", checkOrder);
+$("tGo").addEventListener("click", sendOrder);
+$("tCancel").addEventListener("click", () => { pending = null; $("tConfirm").classList.add("hidden"); });
 </script>
 </body>
 </html>
