@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AK Invest · Bourse et Crypto</title>
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-NA9KMoO1FBW3lbZquy93i7LZhv6sivHgPTG4PL8x+1Y=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-BaZKapMMQVl1RzygKMN4Ikeg4qmiuQ2ojrGVuK1E4wo=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -217,7 +217,7 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
     <h2 style="margin-bottom:14px">Les stratégies, expliquées simplement</h2>
     <div class="lesson" id="lesson"></div>
   </div>
-  <p class="foot">Prix : Binance pour les cryptos (paires en euros), Twelve Data pour les actions et ETF (cotés en dollars : l'effet du taux de change euro/dollar n'est pas compté). Un prix par jour. Les ordres sont simulés à l'ouverture du jour suivant le signal.</p>
+  <p class="foot">Prix : Binance pour les cryptos (paires en euros), Twelve Data pour les actions et ETF. Les prix en devise étrangère (dollar, livre…) sont convertis en euros avec le taux de change de chaque jour : l'effet du change est donc compté. Un prix par jour. Les ordres sont simulés à l'ouverture du jour suivant le signal.</p>
 </div>
 <script>
 // ===== Moteur de simulation (argent virtuel) =====
@@ -454,7 +454,7 @@ async function fetchCrypto(symbol, start) {
   return all;
 }
 // Actions et ETF : Twelve Data (clé gratuite)
-async function fetchStock(symbol, start, mic) {
+async function tdSeries(symbol, start, mic) {
   const key = getKey();
   if (!key) throw new Error("colle d'abord ta clé API Twelve Data et clique sur « Enregistrer »");
   const d = new Date(start).toISOString().slice(0, 10);
@@ -466,7 +466,30 @@ async function fetchStock(symbol, start, mic) {
     if (/plan|upgrade|grow|pro\b/i.test(m)) throw new Error("cet actif n'est pas inclus dans ton plan gratuit Twelve Data (souvent le cas hors États-Unis). Message : " + m.replace(/\.$/, ""));
     throw new Error("Twelve Data : " + m);
   }
-  return j.values.map(v => ({ t: Date.parse(v.datetime + "T00:00:00Z"), o: +v.open, c: +v.close }));
+  return j;
+}
+// Taux de change : combien d'unités de la devise pour 1 € (ex. EUR/USD = 1,12), jour par jour
+async function fxSeries(cur, start) {
+  const j = await tdSeries("EUR/" + cur, start);
+  return j.values.map(v => ({ t: Date.parse(v.datetime + "T00:00:00Z"), r: +v.close }));
+}
+let lastFx = null; // info affichée sous les résultats
+async function fetchStock(symbol, start, mic) {
+  const j = await tdSeries(symbol, start, mic);
+  let rows = j.values.map(v => ({ t: Date.parse(v.datetime + "T00:00:00Z"), o: +v.open, c: +v.close }));
+  let cur = (j.meta && j.meta.currency) || "USD";
+  if (cur === "GBp" || cur === "GBX") { rows = rows.map(k => ({ ...k, o: k.o / 100, c: k.c / 100 })); cur = "GBP"; } // pence -> livres
+  if (cur === "EUR") { lastFx = null; return rows; }
+  // Conversion en euros avec le taux du jour (le dernier taux connu si marché des changes fermé)
+  const fx = await fxSeries(cur, start);
+  if (!fx.length) throw new Error("taux de change EUR/" + cur + " introuvable");
+  let k = 0, rate = fx[0].r;
+  const out = rows.map(row => {
+    while (k < fx.length && fx[k].t <= row.t) { rate = fx[k].r; k++; }
+    return { t: row.t, o: row.o / rate, c: row.c / rate };
+  });
+  lastFx = { cur, first: fx[0].r, last: fx[fx.length - 1].r };
+  return out;
 }
 async function fetchCandles(asset, years) {
   const key = asset.type + asset.symbol + (asset.mic || "") + years;
@@ -566,7 +589,8 @@ async function run() {
     const d = t => new Date(t).toLocaleDateString("fr-FR");
     $("chartTitle").textContent = `Valeur du portefeuille — ${asset.label}, du ${d(period[0].t)} au ${d(period.at(-1).t)}`;
     const short = (period[0].t - t0) > 30 * 864e5 ? " (pas assez d'historique : période raccourcie)" : "";
-    $("status").textContent = `${period.length} jours de prix analysés${short}.`;
+    const fxTxt = (asset.type === "s" && lastFx) ? ` Prix convertis de ${lastFx.cur} en euros au taux de chaque jour (1 € = ${lastFx.first.toFixed(4).replace(".", ",")} ${lastFx.cur} au début, ${lastFx.last.toFixed(4).replace(".", ",")} ${lastFx.cur} aujourd'hui).` : "";
+    $("status").textContent = `${period.length} jours de prix analysés${short}.${fxTxt}`;
   } catch (e) {
     $("status").textContent = "Erreur : " + (e instanceof TypeError ? "impossible de joindre le serveur. Vérifie ta connexion internet" : e.message) + ".";
   } finally { $("run").disabled = false; }
