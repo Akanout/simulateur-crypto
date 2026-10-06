@@ -5,162 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AK Invest · Bourse et Crypto</title>
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-l1ntbROYs9YwxXr58Ysm6ijPXSjLkQTldG/8EuSfKuE=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' file: https://cdnjs.cloudflare.com; style-src 'self' file: 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  color-scheme: dark;
-  --bg:#07080d; --bg-2:#0d0f18;
-  --glass:rgba(255,255,255,.035); --glass-2:rgba(255,255,255,.06);
-  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.14);
-  --text-primary:#f4f5fb; --text-secondary:#a9adc2; --text-muted:#6f7389;
-  --accent:#7c5cff; --accent-2:#22d3ee; --good:#3ee08f; --bad:#ff6b7d;
-  --series-1:#3987e5; --series-2:#d95926; --series-3:#199e70; --series-4:#c98500; --series-5:#d55181;
-  --surface-1:#0d0f18;
-  --radius:20px;
-}
-*{box-sizing:border-box}
-html{background:var(--bg)}
-body{margin:0;min-height:100vh;color:var(--text-primary);font:15px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
-  background:
-    radial-gradient(900px 500px at 10% -10%, rgba(124,92,255,.22), transparent 60%),
-    radial-gradient(800px 500px at 100% 0%, rgba(34,211,238,.14), transparent 60%),
-    var(--bg);}
-body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
-  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
-  background-size:48px 48px;mask-image:radial-gradient(ellipse at top,#000 20%,transparent 70%)}
-.wrap{position:relative;max-width:1120px;margin:0 auto;padding:28px 16px 64px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:40px}
-.brand{display:flex;align-items:center;gap:10px;font:600 1rem "Space Grotesk",sans-serif;letter-spacing:.2px}
-.logo{width:34px;height:34px;font:700 .85rem 'Space Grotesk',sans-serif;letter-spacing:.5px;color:#fff;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 30px rgba(124,92,255,.45)}
-.badge{font-size:.75rem;color:var(--text-secondary);border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;background:var(--glass)}
-.badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:6px;box-shadow:0 0 10px var(--good)}
-.hero{margin-bottom:28px}
-h1{font:700 clamp(2rem,5vw,3.2rem)/1.05 "Space Grotesk",sans-serif;letter-spacing:-1.2px;margin:0 0 12px}
-h1 span{background:linear-gradient(90deg,var(--accent),var(--accent-2));-webkit-background-clip:text;background-clip:text;color:transparent}
-.sub{color:var(--text-secondary);margin:0 0 20px;max-width:640px}
-.banner{display:flex;gap:10px;align-items:flex-start;background:rgba(255,196,0,.06);border:1px solid rgba(255,196,0,.22);border-radius:14px;padding:12px 16px;margin-bottom:22px;color:#e9d9a6;font-size:.88rem}
-.card{background:linear-gradient(180deg,var(--glass-2),var(--glass));border:1px solid var(--line);border-radius:var(--radius);padding:22px;margin-bottom:18px;
-  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 20px 60px -30px rgba(0,0,0,.8)}
-.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;align-items:end}
-label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.9px;color:var(--text-muted);margin-bottom:7px;font-weight:600}
-select,input{width:100%;padding:11px 12px;border:1px solid var(--line-2);border-radius:12px;background:rgba(0,0,0,.35);color:var(--text-primary);font:inherit;transition:border-color .2s,box-shadow .2s}
-select:focus,input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,92,255,.25)}
-option,optgroup{background:#12141f;color:var(--text-primary)}
-button{padding:12px 18px;border:0;border-radius:12px;background:linear-gradient(135deg,var(--accent),#5b8cff 60%,var(--accent-2));color:#fff;font:600 .95rem Inter,sans-serif;cursor:pointer;
-  box-shadow:0 10px 30px -8px rgba(124,92,255,.6);transition:transform .15s,box-shadow .2s,filter .2s}
-button:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 14px 34px -8px rgba(124,92,255,.75)}
-button:disabled{opacity:.6;cursor:wait;transform:none}
-button.ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--line-2);box-shadow:none}
-#run{width:100%}
-.strats{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
-.strats label{display:flex;align-items:center;gap:8px;margin:0;cursor:pointer;text-transform:none;letter-spacing:0;font-size:.86rem;font-weight:500;color:var(--text-secondary);
-  border:1px solid var(--line-2);border-radius:999px;padding:7px 14px;background:rgba(0,0,0,.25);transition:all .2s}
-.strats label:has(input:checked){color:var(--text-primary);border-color:rgba(255,255,255,.28);background:var(--glass-2)}
-.strats input{width:auto;accent-color:var(--accent);margin:0}
-.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
-#status{margin-top:12px;color:var(--text-secondary);font-size:.88rem;min-height:1.4em}
-.keybox{margin-top:16px;padding:14px;border:1px dashed var(--line-2);border-radius:14px;background:rgba(0,0,0,.2)}
-.keyrow{display:flex;gap:8px;flex-wrap:wrap}.keyrow input{flex:1;min-width:180px}
-.hint{font-size:.78rem;color:var(--text-muted);margin:8px 0 0}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}
-.kpi{border-radius:18px;padding:18px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(124,92,255,.12),rgba(34,211,238,.04) 60%,transparent)}
-.kpi .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.9px;color:var(--text-muted);font-weight:600}
-.kpi .v{font:700 1.7rem/1.2 "Space Grotesk",sans-serif;margin-top:6px;letter-spacing:-.5px}
-.kpi .s{font-size:.82rem;color:var(--text-secondary);margin-top:2px}
-.chartbox{position:relative;height:400px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-h2{font:600 1.15rem "Space Grotesk",sans-serif;margin:0;letter-spacing:-.2px}
-.toggle{font-size:.82rem;color:var(--text-secondary);display:flex;gap:6px;align-items:center;text-transform:none;letter-spacing:0;font-weight:500;margin:0}
-.toggle input{width:auto;accent-color:var(--accent)}
-table{width:100%;border-collapse:collapse;font-size:.9rem;font-variant-numeric:tabular-nums}
-th,td{padding:11px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
-tr:hover td{background:rgba(255,255,255,.025)}
-th{color:var(--text-muted);font-weight:600;font-size:.72rem;text-transform:uppercase;letter-spacing:.8px}
-td:first-child,th:first-child{text-align:left}
-.tablewrap{overflow-x:auto}
-.pos{color:var(--good);font-weight:600}.neg{color:var(--bad);font-weight:600}
-.lesson{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
-.lesson div{border:1px solid var(--line);border-radius:14px;padding:14px;font-size:.88rem;color:var(--text-secondary);background:rgba(0,0,0,.2)}
-.lesson b{color:var(--text-primary);display:flex;gap:8px;align-items:center;margin-bottom:6px}
-.verdict{font-size:.95rem;color:var(--text-secondary);margin:6px 0 14px}
-.verdict b{color:var(--text-primary)}
-.foot{font-size:.78rem;color:var(--text-muted)}
-.hidden{display:none}
-.top{position:sticky;top:0;z-index:30;margin:-28px -16px 32px;padding:14px 16px;background:rgba(7,8,13,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
-.nav{display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:999px;padding:4px}
-.nav a{color:var(--text-secondary);text-decoration:none;font-size:.88rem;font-weight:500;padding:7px 14px;border-radius:999px;transition:all .2s}
-.nav a:hover{color:var(--text-primary)}
-.nav a.on{color:#fff;background:linear-gradient(135deg,rgba(124,92,255,.55),rgba(34,211,238,.35))}
-.view{display:none;animation:fade .35s ease}.view.on{display:block}
-.btn{display:inline-block;text-decoration:none;padding:12px 20px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#5b8cff 60%,var(--accent-2));color:#fff;font-weight:600;box-shadow:0 10px 30px -8px rgba(124,92,255,.6)}
-.btn.ghost{background:transparent;border:1px solid var(--line-2);box-shadow:none;color:var(--text-primary)}
-.herocta{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 24px}
-.sechead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:8px 0 12px}
-.h1s{font:700 1.9rem "Space Grotesk",sans-serif;letter-spacing:-.8px;margin:0}
-.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}
-.tile{border:1px solid var(--line);border-radius:18px;padding:16px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.015));cursor:pointer;transition:transform .2s,border-color .2s}
-.tile:hover{transform:translateY(-2px);border-color:var(--line-2)}
-.tile .n{font-size:.8rem;color:var(--text-secondary)}.tile .p{font:700 1.5rem "Space Grotesk",sans-serif;margin:4px 0;font-variant-numeric:tabular-nums}
-.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.mini{margin-top:10px}.mini .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem;font-variant-numeric:tabular-nums;cursor:pointer}
-.mini .row:last-child{border:0}
-.chg{font-weight:600}.chg.pos{color:var(--good)}.chg.neg{color:var(--bad)}
-.go{padding:6px 12px;font-size:.78rem;border-radius:9px}
-.tabbar{display:none}
-.segs{display:inline-flex;gap:4px;padding:4px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.04);margin-bottom:12px}
-.seg{background:none;box-shadow:none;color:var(--text-secondary);padding:8px 18px;border-radius:10px}
-.seg:hover{transform:none;box-shadow:none;color:var(--text-primary)}
-.seg.on{color:#fff;background:linear-gradient(135deg,rgba(124,92,255,.55),rgba(34,211,238,.35))}
-.cats{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
-.cats .chip.on{color:#fff;border-color:rgba(124,92,255,.7);background:rgba(124,92,255,.2)}
-.badge-s{font-size:.7rem;color:var(--text-muted);border:1px solid var(--line-2);border-radius:999px;padding:2px 8px;margin-left:6px}
-#mktTable td:nth-child(2),#mktTable th:nth-child(2){text-align:left}
-.top{box-shadow:0 0 0 100vmax rgba(7,8,13,.72);clip-path:inset(0 -100vmax)}
-@media (max-width:760px){
-  .nav{display:none}
-  .twocol{grid-template-columns:1fr}
-  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(10,11,18,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
-  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-muted);text-decoration:none;font-size:.68rem;padding:4px 0}
-  .tabbar a span{font-size:1.15rem;line-height:1}
-  .tabbar a.on{color:#fff}
-  .wrap{padding-bottom:90px}
-}
-.pick{grid-column:span 2;min-width:0}
-@media (max-width:600px){.pick{grid-column:auto}}
-.searchbox{position:relative}
-.suggest{position:absolute;z-index:20;left:0;right:0;top:calc(100% + 6px);max-height:360px;overflow:auto;border:1px solid var(--line-2);border-radius:14px;background:#10121c;box-shadow:0 20px 50px -10px rgba(0,0,0,.8)}
-.sg{display:flex;align-items:center;gap:10px;width:100%;padding:10px 12px;border:0;border-radius:0;background:none;box-shadow:none;color:var(--text-primary);text-align:left;font:inherit;cursor:pointer;transform:none}
-.sg:hover,.sg.on{background:rgba(124,92,255,.15);filter:none;transform:none;box-shadow:none}
-.sg .ic{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font:700 .7rem "Space Grotesk",sans-serif;background:linear-gradient(135deg,rgba(124,92,255,.35),rgba(34,211,238,.25));flex:none}
-.sg .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sg .nm small{display:block;color:var(--text-muted);font-size:.75rem}
-.sg .ty{font-size:.7rem;color:var(--text-secondary);border:1px solid var(--line-2);border-radius:999px;padding:2px 8px;white-space:nowrap}
-.sgh{padding:8px 12px 4px;font-size:.68rem;text-transform:uppercase;letter-spacing:.9px;color:var(--text-muted)}
-.picked{margin-top:8px;font-size:.82rem;color:var(--text-secondary);min-height:1.2em}
-.picked b{color:var(--text-primary)}
-.popular{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:14px;font-size:.8rem;color:var(--text-muted)}
-#chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);background:rgba(0,0,0,.25);color:var(--text-secondary);font:500 .8rem Inter,sans-serif;box-shadow:none}
-.chip:hover{color:var(--text-primary);border-color:rgba(255,255,255,.3);transform:none;box-shadow:none}
-.trade summary{list-style:none;cursor:pointer}.trade summary::-webkit-details-marker{display:none}
-.trade summary h2::after{content:"▾";float:right;color:var(--text-muted)}
-.trade[open] summary h2::after{content:"▴"}
-.tag{font:600 .7rem Inter,sans-serif;color:#ffb4bf;border:1px solid rgba(255,107,125,.4);background:rgba(255,107,125,.1);border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
-.tradebody{margin-top:14px}
-.warn{color:#ffcf8a}
-.balances{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.balances span{border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;font-size:.85rem;background:rgba(0,0,0,.25);font-variant-numeric:tabular-nums}
-.confirm{margin-top:14px;padding:14px;border-radius:14px;border:1px solid rgba(255,107,125,.4);background:rgba(255,107,125,.07)}
-button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10px 30px -8px rgba(255,90,110,.6)}
-.h3{font:600 .95rem "Space Grotesk",sans-serif;margin:18px 0 8px}
-#results{animation:fade .5s ease}
-@keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-@media (max-width:600px){.card{padding:16px}.chartbox{height:300px}.top{margin-bottom:24px}}
-</style>
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 <div class="wrap">
@@ -170,6 +20,7 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
       <a href="#accueil" data-view="accueil">Accueil</a>
       <a href="#marches" data-view="marches">Marchés</a>
       <a href="#simulateur" data-view="simulateur">Simulateur</a>
+      <a href="#portefeuille" data-view="portefeuille">Portefeuille</a>
       <a href="#trading" data-view="trading">Trading</a>
       <a href="#apprendre" data-view="apprendre">Apprendre</a>
     </nav>
@@ -186,6 +37,10 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
     <div class="sechead"><h2>Cryptos en direct</h2><span class="hint" id="liveTime"></span></div>
     <div class="tiles" id="tiles"></div>
     <div class="twocol">
+      <div class="card"><h2>★ Mes favoris</h2><div id="favList" class="mini"></div></div>
+      <div class="card"><h2>🔔 Mes alertes de prix</h2><div id="alertList" class="mini"></div></div>
+    </div>
+    <div class="twocol" style="margin-top:14px">
       <div class="card"><h2>Plus fortes hausses 24 h</h2><div id="gainers" class="mini"></div></div>
       <div class="card"><h2>Plus fortes baisses 24 h</h2><div id="losers" class="mini"></div></div>
     </div>
@@ -221,7 +76,15 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
         <select id="years"><option value="1">1 an</option><option value="2">2 ans</option><option value="3" selected>3 ans</option><option value="5">5 ans</option></select></div>
       <div><label for="capital">Mise de départ (€)</label><input id="capital" type="number" min="1" step="1" value="10"></div>
       <div><label for="monthly">Ajout chaque mois (€)</label><input id="monthly" type="number" min="0" step="1" value="0"></div>
-      <div><label for="fee">Frais par opération (%)</label><input id="fee" type="number" min="0" step="0.1" value="1"></div>
+      <div><label for="feePreset">Plateforme (frais)</label>
+        <select id="feePreset">
+          <option value="kpro">Kraken Pro · 0,80 %</option>
+          <option value="kapp">Kraken appli · 1 %</option>
+          <option value="bdfr">Bourse Direct · Paris</option>
+          <option value="bdus">Bourse Direct · USA</option>
+          <option value="custom">Personnalisé…</option>
+        </select></div>
+      <div id="feeBox" class="hidden"><label for="fee">Frais par opération (%)</label><input id="fee" type="number" min="0" step="0.1" value="1"></div>
       <div><button id="run">Lancer la simulation</button></div>
     </div>
     <div class="popular"><span>Populaires :</span><div id="chips"></div></div>
@@ -256,6 +119,69 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
       <div class="tablewrap"><table id="split"></table></div>
     </div>
   </div>
+  </section>
+
+  <section class="view" id="v-fiche">
+    <a href="#marches" class="back">← Marchés</a>
+    <div class="fhead">
+      <div><div class="fname" id="fName">—</div><div class="hint" id="fSub"></div></div>
+      <button type="button" id="fFav" class="favbtn" aria-label="Ajouter aux favoris">☆</button>
+    </div>
+    <div class="fprice"><span id="fPrice">—</span> <span id="fChg"></span></div>
+    <div class="card">
+      <div class="toolbar"><div class="segs" id="fRanges">
+        <button type="button" class="seg" data-r="1D">1J</button><button type="button" class="seg" data-r="1W">1S</button><button type="button" class="seg on" data-r="1M">1M</button><button type="button" class="seg" data-r="1Y">1A</button><button type="button" class="seg" data-r="5Y">5A</button>
+      </div><span class="hint" id="fInfo"></span></div>
+      <div class="chartbox"><canvas id="fChart" role="img" aria-label="Évolution du prix"></canvas></div>
+      <div class="fstats" id="fStats"></div>
+    </div>
+    <div class="factions">
+      <button type="button" id="fSim">Simuler une stratégie</button>
+      <button type="button" id="fAdd" class="ghost">+ Ajouter au portefeuille</button>
+      <button type="button" id="fBuy" class="ghost hidden">Acheter sur Kraken</button>
+    </div>
+    <div class="card hidden" id="fAddBox">
+      <h2>Ajouter à mon portefeuille</h2>
+      <div class="controls" style="margin-top:12px">
+        <div><label for="pQty">Quantité achetée</label><input id="pQty" type="number" min="0" step="any" placeholder="ex. 0,0002"></div>
+        <div><label for="pPrice">Prix d'achat unitaire (€)</label><input id="pPrice" type="number" min="0" step="any"></div>
+        <div><label for="pDate">Date d'achat</label><input id="pDate" type="date"></div>
+        <div><label for="pPlat">Plateforme</label><select id="pPlat"><option>Kraken</option><option>Bourse Direct</option><option>Autre</option></select></div>
+        <div><button type="button" id="pSave">Enregistrer</button></div>
+      </div>
+    </div>
+    <div class="card" id="fAlertBox">
+      <h2>🔔 Créer une alerte de prix</h2>
+      <div class="controls" style="margin-top:12px">
+        <div><label for="aDir">Me prévenir si le prix passe</label><select id="aDir"><option value="above">au-dessus de</option><option value="below">en dessous de</option></select></div>
+        <div><label for="aPrice">Prix (€)</label><input id="aPrice" type="number" min="0" step="any"></div>
+        <div><button type="button" id="aSave">Créer l'alerte</button></div>
+      </div>
+      <p class="hint" id="aNote">Les alertes marchent pour les cryptos, tant que le site est ouvert dans un onglet. Ton navigateur te demandera l'autorisation d'afficher des notifications.</p>
+    </div>
+  </section>
+
+  <section class="view" id="v-portefeuille">
+    <div class="sechead"><h1 class="h1s">Mon portefeuille</h1></div>
+    <div class="kpis">
+      <div class="kpi"><div class="k">Valeur actuelle</div><div class="v" id="ptValue">–</div><div class="s" id="ptValueSub"></div></div>
+      <div class="kpi"><div class="k">Montant investi</div><div class="v" id="ptCost">–</div><div class="s">Positions avec prix d'achat</div></div>
+      <div class="kpi"><div class="k">Plus-value latente</div><div class="v" id="ptGain">–</div><div class="s" id="ptGainSub"></div></div>
+      <div class="kpi"><div class="k">Après impôts (31,4 %)</div><div class="v" id="ptNet">–</div><div class="s">Si tu vendais tout aujourd'hui</div></div>
+    </div>
+    <div class="twocol">
+      <div class="card"><h2>Répartition</h2><div class="pie"><canvas id="ptPie" role="img" aria-label="Répartition du portefeuille"></canvas></div></div>
+      <div class="card"><h2>Actions rapides</h2>
+        <p class="hint">Pour ajouter une position : ouvre un actif depuis <a href="#marches">Marchés</a>, puis « Ajouter au portefeuille ».</p>
+        <div class="factions" style="margin:12px 0 0">
+          <button type="button" id="ptKraken" class="ghost">Importer mes soldes Kraken</button>
+          <button type="button" id="ptStocks" class="ghost">Actualiser les prix des actions</button>
+        </div>
+        <p class="hint" id="ptStatus"></p>
+      </div>
+    </div>
+    <div class="card"><h2 style="margin-bottom:10px">Mes positions</h2><div class="tablewrap"><table id="ptTable"></table></div>
+      <p class="hint">Les cryptos sont valorisées avec le prix Binance en euros (mis à jour chaque minute). Les actions, avec le dernier prix Twelve Data converti en euros (1 crédit par action, mis à jour quand tu cliques sur « Actualiser »). Tes positions sont enregistrées uniquement dans ce navigateur.</p></div>
   </section>
 
   <section class="view" id="v-trading">
@@ -308,601 +234,12 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
   <a href="#accueil" data-view="accueil"><span>⌂</span>Accueil</a>
   <a href="#marches" data-view="marches"><span>▤</span>Marchés</a>
   <a href="#simulateur" data-view="simulateur"><span>◷</span>Simuler</a>
+  <a href="#portefeuille" data-view="portefeuille"><span>◔</span>Portef.</a>
   <a href="#trading" data-view="trading"><span>⇅</span>Trading</a>
   <a href="#apprendre" data-view="apprendre"><span>✎</span>Apprendre</a>
 </nav>
-<script>
-// ===== Moteur de simulation (argent virtuel) =====
-// candles : [{t: timestamp ms, o: ouverture, c: clôture}] triés par date
-
-function sma(values, n) {
-  const out = new Array(values.length).fill(null);
-  let sum = 0;
-  for (let i = 0; i < values.length; i++) {
-    sum += values[i];
-    if (i >= n) sum -= values[i - n];
-    if (i >= n - 1) out[i] = sum / n;
-  }
-  return out;
-}
-
-function rsi(values, n = 14) {
-  const out = new Array(values.length).fill(null);
-  let gain = 0, loss = 0;
-  for (let i = 1; i < values.length; i++) {
-    const d = values[i] - values[i - 1];
-    const g = Math.max(d, 0), l = Math.max(-d, 0);
-    if (i <= n) {
-      gain += g; loss += l;
-      if (i === n) { gain /= n; loss /= n; out[i] = loss === 0 ? 100 : 100 - 100 / (1 + gain / loss); }
-    } else {
-      gain = (gain * (n - 1) + g) / n;
-      loss = (loss * (n - 1) + l) / n;
-      out[i] = loss === 0 ? 100 : 100 - 100 / (1 + gain / loss);
-    }
-  }
-  return out;
-}
-
-const STRATEGIES = {
-  hold: {
-    name: "Acheter et garder",
-    short: "On achète au début et on ne touche plus à rien.",
-    // renvoie la part du portefeuille à mettre en crypto (0 ou 1) ; null = ne rien changer
-    signal: () => 1,
-  },
-  dca: {
-    name: "Achat régulier (DCA)",
-    short: "On découpe la somme en 12 parts et on achète une part chaque mois. Ça lisse le prix d'achat.",
-    dca: true,
-  },
-  cross: {
-    name: "Croisement 50/200 jours",
-    short: "On est investi quand la moyenne des 50 derniers jours est au-dessus de celle des 200 jours. Sinon, on garde l'argent.",
-    signal: (i, ind) => (ind.sma50[i] == null || ind.sma200[i] == null) ? 0 : (ind.sma50[i] > ind.sma200[i] ? 1 : 0),
-  },
-  trend: {
-    name: "Suivi de tendance (100 j)",
-    short: "On est investi seulement quand le prix est au-dessus de sa moyenne des 100 derniers jours.",
-    signal: (i, ind, c) => ind.sma100[i] == null ? 0 : (c[i] > ind.sma100[i] ? 1 : 0),
-  },
-  rsi: {
-    name: "Rebond RSI",
-    short: "On achète quand le prix a beaucoup baissé (RSI sous 30) et on vend quand il a beaucoup monté (RSI au-dessus de 70).",
-    signal: (i, ind) => ind.rsi[i] == null ? null : (ind.rsi[i] < 30 ? 1 : ind.rsi[i] > 70 ? 0 : null),
-  },
-};
-
-// opts : {capital, monthly, feePct, start, end} — indicateurs calculés sur tout l'historique,
-// simulation seulement de start à end (les jours avant servent à « chauffer » les moyennes)
-function runStrategy(key, candles, opts) {
-  const S = STRATEGIES[key];
-  const closes = candles.map(k => k.c);
-  const ind = { sma50: sma(closes, 50), sma100: sma(closes, 100), sma200: sma(closes, 200), rsi: rsi(closes, 14) };
-  const fee = opts.feePct / 100;
-  let cash = opts.capital, qty = 0, invested = opts.capital, fees = 0, trades = 0;
-  let target = 0, dcaLeft = 0, dcaPart = 0;
-  if (S.dca) { dcaLeft = 12; dcaPart = opts.capital / 12; }
-  const curve = [];
-  let peak = 0, maxDD = 0, lastMonth = null;
-
-  const buy = (eur, price) => {
-    eur = Math.min(eur, cash);
-    if (eur < 0.01) return;
-    const f = eur * fee;
-    qty += (eur - f) / price; cash -= eur; fees += f; trades++;
-  };
-  const sellAll = (price) => {
-    if (qty <= 0) return;
-    const eur = qty * price, f = eur * fee;
-    cash += eur - f; qty = 0; fees += f; trades++;
-  };
-
-  const start = opts.start || 0, end = opts.end || candles.length;
-  for (let i = start; i < end; i++) {
-    const price = candles[i].o; // on agit à l'ouverture du jour (décision prise la veille : pas de triche)
-    const d = new Date(candles[i].t);
-    const month = d.getUTCFullYear() * 12 + d.getUTCMonth();
-    const newMonth = lastMonth !== null && month !== lastMonth;
-    if (newMonth && opts.monthly > 0) { cash += opts.monthly; invested += opts.monthly; }
-
-    if (S.dca) {
-      if (i === start || newMonth) {
-        if (dcaLeft > 0) { buy(dcaPart, price); dcaLeft--; }
-        if (newMonth && opts.monthly > 0) buy(opts.monthly, price);
-      }
-    } else if (i > start || (start > 0 && i === start)) {
-      const sig = S.signal(i - 1, ind, closes);
-      if (sig !== null && sig !== undefined) target = sig;
-      if (target === 1 && cash >= 0.01) buy(cash, price);
-      else if (target === 0 && qty > 0) sellAll(price);
-    }
-    lastMonth = month;
-
-    const value = cash + qty * candles[i].c;
-    curve.push(value);
-    peak = Math.max(peak, value);
-    if (peak > 0) maxDD = Math.max(maxDD, (peak - value) / peak);
-  }
-  const final = curve[curve.length - 1];
-  return { key, name: S.name, curve, final, invested, gain: final - invested, gainPct: (final / invested - 1) * 100, maxDD: maxDD * 100, fees, trades };
-}
-
-// ===== Interface =====
-const KEYS = Object.keys(STRATEGIES);
-const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-const color = i => css(`--series-${i + 1}`);
-const eur = v => v.toLocaleString("fr-FR", { style: "currency", currency: "EUR" });
-const pct = v => (v >= 0 ? "+" : "") + v.toFixed(1).replace(".", ",") + " %";
-const $ = id => document.getElementById(id);
-
-function buildControls() {
-  $("strats").innerHTML = KEYS.map((k, i) =>
-    `<label><input type="checkbox" value="${k}" checked><span class="dot" style="background:${color(i)}"></span>${STRATEGIES[k].name}</label>`).join("");
-  $("lesson").innerHTML = KEYS.map((k, i) =>
-    `<div><b><span class="dot" style="background:${color(i)}"></span>${STRATEGIES[k].name}</b>${STRATEGIES[k].short}</div>`).join("");
-}
-
-// ----- Clé API (stockée seulement dans ce navigateur) -----
-function getKey() { try { return localStorage.getItem("td_key") || ""; } catch (e) { return ""; } }
-function setKey(v) { try { localStorage.setItem("td_key", v); } catch (e) {} }
-
-// ----- Choix de l'actif : recherche comme sur une vraie plateforme -----
-let selected = { type: "c", symbol: "BTCEUR", label: "Bitcoin (BTC)", sub: "Crypto · Binance · EUR" };
-const POPULAR = [
-  { type: "c", symbol: "BTCEUR", label: "Bitcoin (BTC)", sub: "Crypto · EUR" },
-  { type: "c", symbol: "ETHEUR", label: "Ethereum (ETH)", sub: "Crypto · EUR" },
-  { type: "s", symbol: "URTH", mic: "ARCX", label: "MSCI World (URTH)", sub: "ETF · NYSE Arca · USD" },
-  { type: "s", symbol: "SPY", mic: "ARCX", label: "S&P 500 (SPY)", sub: "ETF · NYSE Arca · USD" },
-  { type: "s", symbol: "AAPL", mic: "XNGS", label: "Apple (AAPL)", sub: "Action · NASDAQ · USD" },
-  { type: "s", symbol: "NVDA", mic: "XNGS", label: "Nvidia (NVDA)", sub: "Action · NASDAQ · USD" },
-  { type: "s", symbol: "MC", mic: "XPAR", label: "LVMH (MC)", sub: "Action · Euronext Paris · EUR" },
-  { type: "s", symbol: "TTE", mic: "XPAR", label: "TotalEnergies (TTE)", sub: "Action · Euronext Paris · EUR" },
-];
-function currentAsset() { return selected; }
-function pickAsset(a) {
-  selected = a;
-  $("search").value = "";
-  $("suggest").classList.add("hidden");
-  $("picked").innerHTML = "";
-  const b = document.createElement("b"); b.textContent = a.label;
-  $("picked").append("Sélectionné : ", b, " — " + (a.sub || ""));
-  updateForm();
-}
-function updateForm() { $("keyBox").classList.toggle("hidden", selected.type === "c"); }
-
-// Liste de toutes les cryptos en euros (Binance, données publiques)
-let cryptoList = null;
-const CRYPTO_NAMES = { BTC: "Bitcoin", ETH: "Ethereum", SOL: "Solana", XRP: "XRP", BNB: "BNB", ADA: "Cardano", DOGE: "Dogecoin", DOT: "Polkadot", LINK: "Chainlink", AVAX: "Avalanche", LTC: "Litecoin", TRX: "Tron", SHIB: "Shiba Inu", PEPE: "Pepe", NEAR: "Near", SUI: "Sui", TON: "Toncoin" };
-async function loadCryptos() {
-  if (cryptoList) return cryptoList;
-  const all = await fetch("https://data-api.binance.vision/api/v3/ticker/price").then(r => r.json());
-  cryptoList = all.filter(t => t.symbol.endsWith("EUR") && !/^(EUR|USDT|USDC|FDUSD)/.test(t.symbol)).map(t => {
-    const base = t.symbol.slice(0, -3);
-    return { type: "c", symbol: t.symbol, label: `${CRYPTO_NAMES[base] || base} (${base})`, sub: "Crypto · EUR", base };
-  });
-  return cryptoList;
-}
-const TYPES = { "Common Stock": "Action", "ETF": "ETF", "Depositary Receipt": "Action (certificat)", "REIT": "Immobilier coté" };
-const FLAGS = { "United States": "US", "France": "FR", "Germany": "DE", "Netherlands": "NL", "Italy": "IT", "Spain": "ES", "United Kingdom": "UK", "Switzerland": "CH", "Belgium": "BE", "Japan": "JP", "Canada": "CA" };
-const COUNTRY_RANK = { "United States": 0, "France": 1, "Germany": 2, "Netherlands": 2, "United Kingdom": 3 };
-async function searchStocks(q) {
-  const j = await fetch(`https://api.twelvedata.com/symbol_search?symbol=${encodeURIComponent(q)}&outputsize=60`, { referrerPolicy: "no-referrer", credentials: "omit" }).then(r => r.json());
-  return (j.data || []).filter(d => TYPES[d.instrument_type])
-    .sort((a, b) => ((a.instrument_type === "Depositary Receipt") - (b.instrument_type === "Depositary Receipt")) || ((COUNTRY_RANK[a.country] ?? 9) - (COUNTRY_RANK[b.country] ?? 9)))
-    .slice(0, 12)
-    .map(d => ({ type: "s", symbol: d.symbol, mic: d.mic_code, label: `${d.instrument_name} (${d.symbol})`,
-      sub: `${TYPES[d.instrument_type]} · ${d.exchange} · ${d.currency}`, flag: FLAGS[d.country] || (d.country || "").slice(0, 2).toUpperCase() }));
-}
-function renderSuggest(groups) {
-  const box = $("suggest"); box.innerHTML = "";
-  let n = 0;
-  for (const [title, items] of groups) {
-    if (!items.length) continue;
-    const h = document.createElement("div"); h.className = "sgh"; h.textContent = title; box.appendChild(h);
-    for (const it of items) {
-      const b = document.createElement("button"); b.type = "button"; b.className = "sg";
-      const ic = document.createElement("span"); ic.className = "ic"; ic.textContent = it.type === "c" ? it.base.slice(0, 4) : it.flag;
-      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = it.label;
-      const sm = document.createElement("small"); sm.textContent = it.sub; nm.appendChild(sm);
-      b.append(ic, nm); b.addEventListener("click", () => pickAsset(it)); box.appendChild(b); n++;
-    }
-  }
-  if (!n) { const h = document.createElement("div"); h.className = "sgh"; h.textContent = "Aucun résultat"; box.appendChild(h); }
-  box.classList.remove("hidden");
-}
-let searchTimer, searchSeq = 0;
-$("search").addEventListener("input", () => {
-  clearTimeout(searchTimer);
-  const q = $("search").value.trim();
-  if (q.length < 2) { $("suggest").classList.add("hidden"); return; }
-  searchTimer = setTimeout(async () => {
-    const seq = ++searchSeq;
-    const ql = q.toLowerCase();
-    const [cr, st] = await Promise.all([
-      loadCryptos().then(l => l.filter(c => c.label.toLowerCase().includes(ql)).slice(0, 6)).catch(() => []),
-      searchStocks(q).catch(() => []),
-    ]);
-    if (seq === searchSeq) renderSuggest([["Cryptos", cr], ["Actions et ETF", st]]);
-  }, 300);
-});
-document.addEventListener("click", e => { if (!e.target.closest(".searchbox")) $("suggest").classList.add("hidden"); });
-POPULAR.forEach(p => { const b = document.createElement("button"); b.type = "button"; b.className = "chip"; b.textContent = p.label.replace(/ \(.*/, ""); b.addEventListener("click", () => pickAsset(p)); $("chips").appendChild(b); });
-
-const cache = {};
-// Cryptos : Binance (données publiques, sans compte)
-async function fetchCrypto(symbol, start) {
-  let from = start, all = [];
-  while (true) {
-    const url = `https://data-api.binance.vision/api/v3/klines?symbol=${symbol}&interval=1d&startTime=${Math.floor(from)}&limit=1000`;
-    const r = await fetch(url);
-    if (!r.ok) throw new Error("Binance a répondu " + r.status);
-    const rows = await r.json();
-    if (!rows.length) break;
-    all = all.concat(rows.map(k => ({ t: k[0], o: +k[1], c: +k[4] })));
-    if (rows.length < 1000) break;
-    from = rows[rows.length - 1][0] + 864e5;
-  }
-  return all;
-}
-// Actions et ETF : Twelve Data (clé gratuite)
-async function tdSeries(symbol, start, mic) {
-  const key = getKey();
-  if (!key) throw new Error("colle d'abord ta clé API Twelve Data et clique sur « Enregistrer »");
-  const d = new Date(start).toISOString().slice(0, 10);
-  const url = `https://api.twelvedata.com/time_series?symbol=${encodeURIComponent(symbol)}&interval=1day&start_date=${d}&outputsize=5000&order=asc${mic ? "&mic_code=" + encodeURIComponent(mic) : ""}`;
-  // la clé passe dans l'en-tête, pas dans l'adresse : elle n'apparaît pas dans l'historique ni dans les journaux
-  const j = await fetch(url, { headers: { Authorization: "apikey " + key }, referrerPolicy: "no-referrer", credentials: "omit" }).then(r => r.json());
-  if (j.status !== "ok") {
-    const m = j.message || "réponse inconnue";
-    if (/plan|upgrade|grow|pro\b/i.test(m)) throw new Error("cet actif n'est pas inclus dans ton plan gratuit Twelve Data (souvent le cas hors États-Unis). Message : " + m.replace(/\.$/, ""));
-    throw new Error("Twelve Data : " + m);
-  }
-  return j;
-}
-// Taux de change : combien d'unités de la devise pour 1 € (ex. EUR/USD = 1,12), jour par jour
-async function fxSeries(cur, start) {
-  const j = await tdSeries("EUR/" + cur, start);
-  return j.values.map(v => ({ t: Date.parse(v.datetime + "T00:00:00Z"), r: +v.close }));
-}
-let lastFx = null; // info affichée sous les résultats
-async function fetchStock(symbol, start, mic) {
-  const j = await tdSeries(symbol, start, mic);
-  let rows = j.values.map(v => ({ t: Date.parse(v.datetime + "T00:00:00Z"), o: +v.open, c: +v.close }));
-  let cur = (j.meta && j.meta.currency) || "USD";
-  if (cur === "GBp" || cur === "GBX") { rows = rows.map(k => ({ ...k, o: k.o / 100, c: k.c / 100 })); cur = "GBP"; } // pence -> livres
-  if (cur === "EUR") { lastFx = null; return rows; }
-  // Conversion en euros avec le taux du jour (le dernier taux connu si marché des changes fermé)
-  const fx = await fxSeries(cur, start);
-  if (!fx.length) throw new Error("taux de change EUR/" + cur + " introuvable");
-  let k = 0, rate = fx[0].r;
-  const out = rows.map(row => {
-    while (k < fx.length && fx[k].t <= row.t) { rate = fx[k].r; k++; }
-    return { t: row.t, o: row.o / rate, c: row.c / rate };
-  });
-  lastFx = { cur, first: fx[0].r, last: fx[fx.length - 1].r };
-  return out;
-}
-async function fetchCandles(asset, years) {
-  const key = asset.type + asset.symbol + (asset.mic || "") + years;
-  if (cache[key]) return cache[key];
-  const start = Date.now() - years * 365.25 * 864e5 - 300 * 864e5; // marge pour calculer les moyennes (la Bourse ferme le week-end)
-  const all = asset.type === "c" ? await fetchCrypto(asset.symbol, start) : await fetchStock(asset.symbol, start, asset.mic);
-  cache[key] = all;
-  return all;
-}
-
-let chart;
-function drawChart(candles, results) {
-  const labels = candles.map(k => new Date(k.t).toLocaleDateString("fr-FR", { day: "2-digit", month: "short", year: "2-digit" }));
-  const ds = results.map(r => ({
-    label: r.name, data: r.curve.map(v => +v.toFixed(2)),
-    borderColor: color(KEYS.indexOf(r.key)), backgroundColor: color(KEYS.indexOf(r.key)),
-    borderWidth: 2, pointRadius: 0, pointHoverRadius: 5, pointHoverBorderWidth: 2, pointHoverBorderColor: css("--surface-1"), tension: 0,
-  }));
-  if (chart) chart.destroy();
-  chart = new Chart($("chart"), {
-    type: "line",
-    data: { labels, datasets: ds },
-    options: {
-      responsive: true, maintainAspectRatio: false, animation: false,
-      interaction: { mode: "index", intersect: false },
-      plugins: {
-        legend: { position: "top", align: "start", labels: { color: css("--text-secondary"), usePointStyle: true, pointStyle: "circle", boxWidth: 8, boxHeight: 8 } },
-        tooltip: { backgroundColor: "rgba(13,15,24,.95)", borderColor: "rgba(255,255,255,.12)", borderWidth: 1, padding: 12, titleColor: "#f4f5fb", bodyColor: "#a9adc2", callbacks: { label: c => ` ${c.dataset.label} : ${eur(c.parsed.y)}` }, itemSort: (a, b) => b.parsed.y - a.parsed.y },
-      },
-      scales: {
-        x: { ticks: { color: css("--text-muted"), maxTicksLimit: 8, maxRotation: 0 }, grid: { display: false }, border: { color: "rgba(255,255,255,.1)" } },
-        y: { type: $("logscale").checked ? "logarithmic" : "linear",
-             ticks: { color: css("--text-muted"), callback: v => eur(+v) }, grid: { color: "rgba(255,255,255,.06)" }, border: { display: false } },
-      },
-    },
-  });
-}
-
-function cell(v, f) { return `<td class="${v >= 0 ? "pos" : "neg"}">${f(v)}</td>`; }
-
-function drawTable(results, hold) {
-  const sorted = [...results].sort((a, b) => b.final - a.final);
-  $("table").innerHTML = `<tr><th>Stratégie</th><th>Investi</th><th>Valeur finale</th><th>Gain</th><th>Gain %</th><th>Pire chute</th><th>Opérations</th><th>Frais payés</th></tr>` +
-    sorted.map(r => `<tr><td><span class="dot" style="background:${color(KEYS.indexOf(r.key))}"></span> ${r.name}</td>
-      <td>${eur(r.invested)}</td><td>${eur(r.final)}</td>${cell(r.gain, eur)}${cell(r.gainPct, pct)}
-      <td>-${r.maxDD.toFixed(0)} %</td><td>${r.trades}</td><td>${eur(r.fees)}</td></tr>`).join("");
-  const best = sorted[0];
-  $("kpiBest").textContent = best.name;
-  $("kpiBestSub").textContent = `parmi ${results.length} stratégies`;
-  $("kpiFinal").textContent = eur(best.final);
-  $("kpiFinalSub").textContent = `pour ${eur(best.invested)} investis`;
-  $("kpiGain").textContent = pct(best.gainPct);
-  $("kpiGain").className = "v " + (best.gainPct >= 0 ? "pos" : "neg");
-  $("kpiGainSub").textContent = (best.gain >= 0 ? "+" : "") + eur(best.gain);
-  $("kpiDD").textContent = "-" + best.maxDD.toFixed(0) + " %";
-  let txt = `Meilleure stratégie sur cette période : <b>${best.name}</b> (${pct(best.gainPct)}).`;
-  if (hold && best.key !== "hold") {
-    txt += ` Elle bat « Acheter et garder » de ${(best.gainPct - hold.gainPct).toFixed(1).replace(".", ",")} points.`;
-  }
-  const worstDD = Math.max(...results.map(r => r.maxDD));
-  txt += ` Attention : à un moment, un portefeuille a perdu jusqu'à ${worstDD.toFixed(0)} % de sa valeur. Il faut pouvoir supporter ça sans paniquer.`;
-  $("verdict").innerHTML = txt;
-}
-
-function drawSplit(candles, keys, opts, warm) {
-  const mid = warm + Math.floor((candles.length - warm) / 2);
-  const fmt = t => new Date(t).toLocaleDateString("fr-FR", { month: "short", year: "numeric" });
-  const rowsHtml = keys.map(k => {
-    const ra = runStrategy(k, candles, { ...opts, monthly: 0, start: warm, end: mid });
-    const rb = runStrategy(k, candles, { ...opts, monthly: 0, start: mid });
-    const ok = ra.gainPct > 0 && rb.gainPct > 0;
-    return `<tr><td><span class="dot" style="background:${color(KEYS.indexOf(k))}"></span> ${STRATEGIES[k].name}</td>${cell(ra.gainPct, pct)}${cell(rb.gainPct, pct)}<td>${ok ? "✔ Gagne sur les deux" : "✖ Pas régulier"}</td></tr>`;
-  }).join("");
-  $("split").innerHTML = `<tr><th>Stratégie</th><th>1re moitié (dès ${fmt(candles[warm].t)})</th><th>2e moitié (dès ${fmt(candles[mid].t)})</th><th>Verdict</th></tr>` + rowsHtml;
-}
-
-async function run() {
-  const keys = [...document.querySelectorAll("#strats input:checked")].map(i => i.value);
-  if (!keys.length) { $("status").textContent = "Coche au moins une stratégie."; return; }
-  const opts = { capital: Math.max(1, +$("capital").value || 10), monthly: Math.max(0, +$("monthly").value || 0), feePct: Math.max(0, +$("fee").value || 0) };
-  const years = +$("years").value, asset = currentAsset();
-  if (!/^[A-Z0-9.\-]{1,15}$/.test(asset.symbol)) { $("status").textContent = "Choisis un actif dans la recherche."; return; }
-  $("run").disabled = true; $("status").textContent = "Téléchargement des prix…";
-  try {
-    const all = await fetchCandles(asset, years);
-    // préchauffe : ~200 jours de cotation avant le début de la période
-    const t0 = Date.now() - years * 365.25 * 864e5;
-    let warm = all.findIndex(k => k.t >= t0);
-    if (warm < 200) warm = Math.min(200, all.length - 60);
-    if (all.length < warm + 60) throw new Error("pas assez d'historique pour cet actif sur cette période. Choisis une période plus courte");
-    const results = keys.map(k => runStrategy(k, all, { ...opts, start: warm }));
-    const period = all.slice(warm);
-    drawChart(period, results);
-    drawTable(results, results.find(r => r.key === "hold"));
-    drawSplit(all, keys, opts, warm);
-    $("results").classList.remove("hidden");
-    const d = t => new Date(t).toLocaleDateString("fr-FR");
-    $("chartTitle").textContent = `Valeur du portefeuille — ${asset.label}, du ${d(period[0].t)} au ${d(period.at(-1).t)}`;
-    const short = (period[0].t - t0) > 30 * 864e5 ? " (pas assez d'historique : période raccourcie)" : "";
-    const fxTxt = (asset.type === "s" && lastFx) ? ` Prix convertis de ${lastFx.cur} en euros au taux de chaque jour (1 € = ${lastFx.first.toFixed(4).replace(".", ",")} ${lastFx.cur} au début, ${lastFx.last.toFixed(4).replace(".", ",")} ${lastFx.cur} aujourd'hui).` : "";
-    $("status").textContent = `${period.length} jours de prix analysés${short}.${fxTxt}`;
-  } catch (e) {
-    $("status").textContent = "Erreur : " + (e instanceof TypeError ? "impossible de joindre le serveur. Vérifie ta connexion internet" : e.message) + ".";
-  } finally { $("run").disabled = false; }
-}
-
-buildControls();
-$("apikey").value = getKey();
-$("delKey").addEventListener("click", () => { try { localStorage.removeItem("td_key"); } catch (e) {} $("apikey").value = ""; $("status").textContent = "Clé effacée de ce navigateur."; });
-$("saveKey").addEventListener("click", () => { setKey($("apikey").value.trim()); $("status").textContent = "Clé enregistrée dans ce navigateur."; });
-pickAsset(selected);
-$("run").addEventListener("click", run);
-$("logscale").addEventListener("change", () => { if (chart) { chart.options.scales.y.type = $("logscale").checked ? "logarithmic" : "linear"; chart.update(); } });
-matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { buildControls(); if (chart) run(); });
-
-// ===== Trading réel via le relais local (Kraken) =====
-const RELAY = "http://127.0.0.1:3737";
-function getCode() { try { return localStorage.getItem("relay_code") || ""; } catch (e) { return ""; } }
-function setCode(v) { try { localStorage.setItem("relay_code", v); } catch (e) {} }
-async function relay(pathname, body) {
-  const opt = { headers: { "X-Code-Acces": $("relayCode").value.trim() } };
-  if (body) { opt.method = "POST"; opt.headers["Content-Type"] = "application/json"; opt.body = JSON.stringify(body); }
-  let r;
-  try { r = await fetch(RELAY + pathname, opt); }
-  catch (e) { throw new Error("relais injoignable. Lance « node relais-kraken.js » sur ton PC"); }
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.erreur || "erreur " + r.status);
-  return j;
-}
-const NAMES = { ZEUR: "EUR", XXBT: "BTC", XETH: "ETH", SOL: "SOL" };
-async function relayConnect() {
-  $("relayStatus").textContent = "Connexion…";
-  try {
-    const j = await relay("/etat");
-    setCode($("relayCode").value.trim());
-    $("relayStatus").textContent = `Connecté à Kraken. Plafond : ${eur(j.maxEur)} par ordre.`;
-    const sold = Object.entries(j.soldes).filter(([, v]) => +v > 0);
-    $("balances").innerHTML = "";
-    (sold.length ? sold : [["ZEUR", "0"]]).forEach(([k, v]) => {
-      const s = document.createElement("span");
-      s.textContent = `${NAMES[k] || k} : ${(+v).toLocaleString("fr-FR", { maximumFractionDigits: 8 })}`;
-      $("balances").appendChild(s);
-    });
-    $("tAmount").max = j.maxEur;
-    $("tradeForm").classList.remove("hidden");
-    loadHistory();
-  } catch (e) { $("relayStatus").textContent = "Erreur : " + e.message + "."; }
-}
-let pending = null;
-async function checkOrder() {
-  $("tResult").textContent = ""; $("tConfirm").classList.add("hidden");
-  pending = { crypto: $("tCrypto").value, sens: $("tSide").value, montantEur: +$("tAmount").value };
-  try {
-    const j = await relay("/ordre", { ...pending, verifierSeulement: true });
-    $("tSummary").textContent = `${pending.sens === "achat" ? "Acheter" : "Vendre"} pour ${eur(pending.montantEur)} de ${pending.crypto}, au prix du marché (environ ${eur(j.prixEstime)} l'unité). Kraken a validé l'ordre : « ${j.description} ». Des frais Kraken s'ajoutent.`;
-    $("tConfirm").classList.remove("hidden");
-  } catch (e) { $("tResult").textContent = "Ordre refusé : " + e.message + "."; pending = null; }
-}
-async function sendOrder() {
-  if (!pending) return;
-  $("tGo").disabled = true;
-  try {
-    const j = await relay("/ordre", { ...pending, verifierSeulement: false });
-    $("tResult").textContent = `Ordre envoyé. Numéro Kraken : ${(j.txid || []).join(", ")}.`;
-    $("tConfirm").classList.add("hidden"); pending = null;
-    relayConnect();
-  } catch (e) { $("tResult").textContent = "Échec : " + e.message + "."; }
-  finally { $("tGo").disabled = false; }
-}
-async function loadHistory() {
-  try {
-    const j = await relay("/historique");
-    const t = $("tHistory"); t.innerHTML = "<tr><th>Date</th><th>Crypto</th><th>Sens</th><th>Montant</th><th>N° Kraken</th></tr>";
-    if (!j.ordres.length) { t.insertAdjacentHTML("beforeend", "<tr><td colspan='5'>Aucun ordre réel pour l'instant.</td></tr>"); return; }
-    j.ordres.forEach(o => {
-      const tr = document.createElement("tr");
-      [new Date(o.date).toLocaleString("fr-FR"), o.crypto, o.sens, eur(o.montantEur), (o.txid || []).join(", ")].forEach(v => { const td = document.createElement("td"); td.textContent = v; tr.appendChild(td); });
-      t.appendChild(tr);
-    });
-  } catch (e) {}
-}
-$("relayCode").value = getCode();
-$("relayConnect").addEventListener("click", relayConnect);
-$("tCheck").addEventListener("click", checkOrder);
-$("tGo").addEventListener("click", sendOrder);
-$("tCancel").addEventListener("click", () => { pending = null; $("tConfirm").classList.add("hidden"); });
-
-// ===== Menus et pages (comme une vraie plateforme) =====
-const VIEWS = ["accueil", "marches", "simulateur", "trading", "apprendre"];
-function showView() {
-  const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "accueil";
-  VIEWS.forEach(n => $("v-" + n).classList.toggle("on", n === v));
-  document.querySelectorAll("[data-view]").forEach(a => a.classList.toggle("on", a.dataset.view === v));
-  if (v === "accueil" || v === "marches") loadMarkets();
-  window.scrollTo({ top: 0 });
-}
-window.addEventListener("hashchange", showView);
-
-// ----- Marchés : toutes les cryptos en euros, prix et variation 24 h (Binance, public) -----
-let market = [], marketAt = 0;
-const priceFmt = v => v.toLocaleString("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: v < 1 ? 6 : 2 });
-const volFmt = v => v >= 1e6 ? (v / 1e6).toFixed(1).replace(".", ",") + " M€" : v >= 1e3 ? (v / 1e3).toFixed(0) + " k€" : v.toFixed(0) + " €";
-async function loadMarkets(force) {
-  if (!force && Date.now() - marketAt < 60000 && market.length) return renderMarkets();
-  try {
-    const all = await fetch("https://data-api.binance.vision/api/v3/ticker/24hr?type=MINI").then(r => r.json());
-    market = all.filter(t => t.symbol.endsWith("EUR") && !/^(EUR|USDT|USDC|FDUSD)/.test(t.symbol) && +t.lastPrice > 0)
-      .map(t => { const base = t.symbol.slice(0, -3); return { symbol: t.symbol, base, name: CRYPTO_NAMES[base] || base, price: +t.lastPrice, chg: (t.lastPrice / t.openPrice - 1) * 100, vol: +t.quoteVolume }; })
-      .sort((a, b) => b.vol - a.vol);
-    marketAt = Date.now();
-    renderMarkets();
-  } catch (e) { $("mktInfo").textContent = "Impossible de charger les prix (connexion ?)."; }
-}
-function cryptoAsset(m) { return { type: "c", symbol: m.symbol, base: m.base, label: `${m.name} (${m.base})`, sub: "Crypto · EUR" }; }
-function simulate(m) { pickAsset(cryptoAsset(m)); location.hash = "#simulateur"; }
-function chgSpan(c) { const s = document.createElement("span"); s.className = "chg " + (c >= 0 ? "pos" : "neg"); s.textContent = (c >= 0 ? "+" : "") + c.toFixed(2).replace(".", ",") + " %"; return s; }
-// ----- Catégories -----
-const CRYPTO_CATS = {
-  "Grandes cryptos": ["BTC", "ETH", "XRP", "BNB", "SOL"],
-  "Blockchains (Layer 1)": ["ETH", "SOL", "ADA", "AVAX", "DOT", "NEAR", "SUI", "TON", "TRX", "APT", "ATOM", "ALGO", "XLM", "HBAR", "ICP", "SEI"],
-  "Layer 2": ["ARB", "OP", "POL", "MATIC", "IMX", "STRK", "MNT"],
-  "Finance décentralisée (DeFi)": ["LINK", "UNI", "AAVE", "MKR", "LDO", "CRV", "COMP", "SNX", "INJ", "JUP", "PENDLE", "ENA"],
-  "Intelligence artificielle": ["FET", "RENDER", "TAO", "AGIX", "GRT", "WLD", "AR"],
-  "Memecoins": ["DOGE", "SHIB", "PEPE", "BONK", "WIF", "FLOKI", "TRUMP"],
-  "Jeux et métavers": ["SAND", "MANA", "AXS", "GALA", "ENJ", "APE"],
-  "Paiement": ["LTC", "BCH", "XRP", "XLM"],
-};
-const STOCKS = [
-  // [catégorie, symbole, code Bourse, nom, Bourse, devise]
-  ["Technologie", "AAPL", "XNGS", "Apple", "NASDAQ", "USD"], ["Technologie", "MSFT", "XNGS", "Microsoft", "NASDAQ", "USD"],
-  ["Technologie", "NVDA", "XNGS", "Nvidia", "NASDAQ", "USD"], ["Technologie", "GOOGL", "XNGS", "Alphabet (Google)", "NASDAQ", "USD"],
-  ["Technologie", "META", "XNGS", "Meta", "NASDAQ", "USD"], ["Technologie", "AMD", "XNGS", "AMD", "NASDAQ", "USD"],
-  ["Technologie", "ASML", "XAMS", "ASML", "Euronext Amsterdam", "EUR"], ["Technologie", "CAP", "XPAR", "Capgemini", "Euronext Paris", "EUR"],
-  ["Luxe et consommation", "MC", "XPAR", "LVMH", "Euronext Paris", "EUR"], ["Luxe et consommation", "RMS", "XPAR", "Hermès", "Euronext Paris", "EUR"],
-  ["Luxe et consommation", "OR", "XPAR", "L'Oréal", "Euronext Paris", "EUR"], ["Luxe et consommation", "AMZN", "XNGS", "Amazon", "NASDAQ", "USD"],
-  ["Luxe et consommation", "KO", "XNYS", "Coca-Cola", "NYSE", "USD"], ["Luxe et consommation", "MCD", "XNYS", "McDonald's", "NYSE", "USD"],
-  ["Luxe et consommation", "NKE", "XNYS", "Nike", "NYSE", "USD"],
-  ["Énergie", "TTE", "XPAR", "TotalEnergies", "Euronext Paris", "EUR"], ["Énergie", "XOM", "XNYS", "ExxonMobil", "NYSE", "USD"],
-  ["Énergie", "CVX", "XNYS", "Chevron", "NYSE", "USD"], ["Énergie", "NEE", "XNYS", "NextEra Energy (renouvelable)", "NYSE", "USD"],
-  ["Santé", "SAN", "XPAR", "Sanofi", "Euronext Paris", "EUR"], ["Santé", "LLY", "XNYS", "Eli Lilly", "NYSE", "USD"],
-  ["Santé", "JNJ", "XNYS", "Johnson & Johnson", "NYSE", "USD"], ["Santé", "NVO", "XNYS", "Novo Nordisk", "NYSE", "USD"],
-  ["Finance", "BNP", "XPAR", "BNP Paribas", "Euronext Paris", "EUR"], ["Finance", "JPM", "XNYS", "JPMorgan", "NYSE", "USD"],
-  ["Finance", "V", "XNYS", "Visa", "NYSE", "USD"], ["Finance", "MA", "XNYS", "Mastercard", "NYSE", "USD"],
-  ["Automobile", "TSLA", "XNGS", "Tesla", "NASDAQ", "USD"], ["Automobile", "RNO", "XPAR", "Renault", "Euronext Paris", "EUR"],
-  ["Automobile", "STLAP", "XPAR", "Stellantis", "Euronext Paris", "EUR"], ["Automobile", "TM", "XNYS", "Toyota", "NYSE", "USD"],
-  ["Industrie et défense", "AIR", "XPAR", "Airbus", "Euronext Paris", "EUR"], ["Industrie et défense", "SAF", "XPAR", "Safran", "Euronext Paris", "EUR"],
-  ["Industrie et défense", "BA", "XNYS", "Boeing", "NYSE", "USD"], ["Industrie et défense", "CAT", "XNYS", "Caterpillar", "NYSE", "USD"],
-];
-const ETFS = [
-  ["Monde", "URTH", "ARCX", "iShares MSCI World", "NYSE Arca", "USD"], ["Monde", "VT", "ARCX", "Vanguard Total World", "NYSE Arca", "USD"],
-  ["États-Unis", "SPY", "ARCX", "SPDR S&P 500", "NYSE Arca", "USD"], ["États-Unis", "QQQ", "XNGS", "Invesco Nasdaq 100", "NASDAQ", "USD"],
-  ["États-Unis", "VTI", "ARCX", "Vanguard Total US", "NYSE Arca", "USD"],
-  ["Europe", "VGK", "ARCX", "Vanguard FTSE Europe", "NYSE Arca", "USD"], ["Europe", "EZU", "BATS", "iShares MSCI Zone euro", "Cboe", "USD"],
-  ["Pays émergents", "EEM", "ARCX", "iShares MSCI Emerging", "NYSE Arca", "USD"], ["Pays émergents", "VWO", "ARCX", "Vanguard Emerging", "NYSE Arca", "USD"],
-  ["Secteurs", "XLK", "ARCX", "Technologie US", "NYSE Arca", "USD"], ["Secteurs", "XLV", "ARCX", "Santé US", "NYSE Arca", "USD"],
-  ["Secteurs", "ICLN", "XNGS", "Énergie propre", "NASDAQ", "USD"],
-  ["Or et matières premières", "GLD", "ARCX", "SPDR Gold (or)", "NYSE Arca", "USD"], ["Or et matières premières", "SLV", "ARCX", "iShares Silver (argent)", "NYSE Arca", "USD"],
-  ["Obligations", "AGG", "ARCX", "iShares obligations US", "NYSE Arca", "USD"], ["Obligations", "TLT", "XNGS", "Obligations d'État US 20 ans", "NASDAQ", "USD"],
-];
-let mktTab = "crypto", mktCat = "Toutes";
-function catsFor(tab) {
-  if (tab === "crypto") return ["Toutes", ...Object.keys(CRYPTO_CATS), "Autres"];
-  const list = tab === "action" ? STOCKS : ETFS;
-  return ["Toutes", ...new Set(list.map(x => x[0]))];
-}
-function renderCats() {
-  $("mktCats").innerHTML = "";
-  catsFor(mktTab).forEach(c => { const b = document.createElement("button"); b.type = "button"; b.className = "chip" + (c === mktCat ? " on" : ""); b.textContent = c;
-    b.addEventListener("click", () => { mktCat = c; renderCats(); renderMarkets(); }); $("mktCats").appendChild(b); });
-}
-document.querySelectorAll("#mktTabs .seg").forEach(b => b.addEventListener("click", () => {
-  mktTab = b.dataset.tab; mktCat = "Toutes";
-  document.querySelectorAll("#mktTabs .seg").forEach(x => x.classList.toggle("on", x === b));
-  renderCats(); renderMarkets();
-}));
-function stockAsset(x, isEtf) { return { type: "s", symbol: x[1], mic: x[2], label: `${x[3]} (${x[1]})`, sub: `${isEtf ? "ETF" : "Action"} · ${x[4]} · ${x[5]}`, flag: x[5] === "EUR" ? "EU" : "US" }; }
-function simBtn(fn) { const b = document.createElement("button"); b.type = "button"; b.className = "go"; b.textContent = "Simuler"; b.addEventListener("click", fn); return b; }
-
-function renderMarkets() {
-  const t = marketAt ? new Date(marketAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" }) : "";
-  if (t) $("liveTime").textContent = "Mis à jour à " + t;
-  // tuiles de l'accueil
-  $("tiles").innerHTML = "";
-  ["BTC", "ETH", "SOL", "XRP"].map(b => market.find(m => m.base === b)).filter(Boolean).forEach(m => {
-    const d = document.createElement("div"); d.className = "tile";
-    const n = document.createElement("div"); n.className = "n"; n.textContent = `${m.name} · ${m.base}`;
-    const p = document.createElement("div"); p.className = "p"; p.textContent = priceFmt(m.price);
-    d.append(n, p, chgSpan(m.chg)); d.addEventListener("click", () => simulate(m)); $("tiles").appendChild(d);
-  });
-  const liquid = market.filter(m => m.vol > 50000);
-  const mini = (id, list) => { $(id).innerHTML = ""; list.forEach(m => { const r = document.createElement("div"); r.className = "row"; const a = document.createElement("span"); a.textContent = `${m.name} (${m.base})`; r.append(a, chgSpan(m.chg)); r.addEventListener("click", () => simulate(m)); $(id).appendChild(r); }); };
-  mini("gainers", [...liquid].sort((a, b) => b.chg - a.chg).slice(0, 5));
-  mini("losers", [...liquid].sort((a, b) => a.chg - b.chg).slice(0, 5));
-
-  // tableau des marchés selon l'onglet et la catégorie
-  const q = ($("mktFilter").value || "").toLowerCase();
-  const tb = $("mktTable");
-  const addRow = cells => { const tr = document.createElement("tr"); cells.forEach(c => { const td = document.createElement("td"); if (c instanceof Node) td.appendChild(c); else td.textContent = c; tr.appendChild(td); }); tb.appendChild(tr); };
-  if (mktTab === "crypto") {
-    const known = new Set(Object.values(CRYPTO_CATS).flat());
-    let list = market;
-    if (mktCat === "Autres") list = list.filter(m => !known.has(m.base));
-    else if (mktCat !== "Toutes") list = list.filter(m => CRYPTO_CATS[mktCat].includes(m.base));
-    list = list.filter(m => !q || (m.name + " " + m.base).toLowerCase().includes(q));
-    tb.innerHTML = "<tr><th>#</th><th>Crypto</th><th>Prix</th><th>24 h</th><th>Volume 24 h</th><th></th></tr>";
-    list.slice(0, 150).forEach((m, i) => addRow([String(i + 1), `${m.name} (${m.base})`, priceFmt(m.price), chgSpan(m.chg), volFmt(m.vol), simBtn(() => simulate(m))]));
-    $("mktInfo").textContent = `${list.length} cryptos` + (t ? ` · mis à jour à ${t}` : "");
-    $("mktNote").textContent = "Prix en euros en direct (Binance), mis à jour toutes les minutes.";
-  } else {
-    const isEtf = mktTab === "etf";
-    const list = (isEtf ? ETFS : STOCKS).filter(x => (mktCat === "Toutes" || x[0] === mktCat) && (!q || (x[3] + " " + x[1]).toLowerCase().includes(q)));
-    tb.innerHTML = `<tr><th>#</th><th>${isEtf ? "ETF" : "Entreprise"}</th><th>Catégorie</th><th>Bourse</th><th>Devise</th><th></th></tr>`;
-    list.forEach((x, i) => addRow([String(i + 1), `${x[3]} (${x[1]})`, x[0], x[4], x[5], simBtn(() => { pickAsset(stockAsset(x, isEtf)); location.hash = "#simulateur"; })]));
-    $("mktInfo").textContent = `${list.length} ${isEtf ? "ETF" : "entreprises"}`;
-    $("mktNote").textContent = "Sélection des valeurs les plus connues. Pour toutes les autres, utilise la recherche du Simulateur. Avec le plan gratuit Twelve Data, les cotations hors États-Unis (Paris, Amsterdam…) peuvent être refusées.";
-  }
-}
-renderCats();
-$("mktFilter").addEventListener("input", renderMarkets);
-setInterval(() => { if (["#accueil", "#marches", ""].includes(location.hash)) loadMarkets(true); }, 60000);
-showView();
-</script>
+<script src="assets/engine.js"></script>
+<script src="assets/app.js"></script>
+<script src="assets/features.js"></script>
 </body>
 </html>
