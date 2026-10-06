@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Simulateur Bourse et Crypto</title>
+<title>AK Invest · Bourse et Crypto</title>
 <meta name="referrer" content="no-referrer">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Sx6Wi173+CBKkR0gzfaOjKn3m6Oyg81W9+Otzzkqb5c=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -35,7 +35,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;
 .wrap{position:relative;max-width:1120px;margin:0 auto;padding:28px 16px 64px}
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:40px}
 .brand{display:flex;align-items:center;gap:10px;font:600 1rem "Space Grotesk",sans-serif;letter-spacing:.2px}
-.logo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 30px rgba(124,92,255,.45)}
+.logo{width:34px;height:34px;font:700 .85rem 'Space Grotesk',sans-serif;letter-spacing:.5px;color:#fff;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;box-shadow:0 8px 30px rgba(124,92,255,.45)}
 .badge{font-size:.75rem;color:var(--text-secondary);border:1px solid var(--line-2);border-radius:999px;padding:5px 12px;background:var(--glass)}
 .badge i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--good);margin-right:6px;box-shadow:0 0 10px var(--good)}
 .hero{margin-bottom:28px}
@@ -109,14 +109,14 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
 <body>
 <div class="wrap">
   <div class="top">
-    <div class="brand"><div class="logo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 7"/><polyline points="15 7 21 7 21 13"/></svg></div>Backtest Lab</div>
-    <div class="badge"><i></i>Prix réels · argent virtuel</div>
+    <div class="brand"><div class="logo">AK</div>AK Invest</div>
+    <div class="badge"><i></i>Prix réels du marché</div>
   </div>
   <div class="hero">
     <h1>Teste avant <span>d'investir.</span></h1>
     <p class="sub">Cryptos, actions et ETF : compare des stratégies connues sur les vrais prix du passé, avec les frais comptés.</p>
   </div>
-  <div class="banner">⚠️ <span>Simulation seulement : aucun argent réel n'est utilisé, et ce n'est pas un conseil d'investissement. Les résultats passés ne garantissent pas les résultats futurs.</span></div>
+  <div class="banner">⚠️ <span>Le simulateur utilise de l'argent virtuel. La partie « Trading réel » utilise ton vrai argent. Rien ici n'est un conseil d'investissement, et les résultats passés ne garantissent pas les résultats futurs.</span></div>
 
   <div class="card">
     <div class="controls">
