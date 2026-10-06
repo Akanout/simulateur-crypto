@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>AK Invest · Bourse et Crypto</title>
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-BaZKapMMQVl1RzygKMN4Ikeg4qmiuQ2ojrGVuK1E4wo=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-Ays03r7sCPXEcdhRIeR17aA4NeTDhqr9ggVYO4AFpSE=' https://cdnjs.cloudflare.com; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src https://data-api.binance.vision https://api.twelvedata.com http://127.0.0.1:3737; img-src 'self' data:; base-uri 'none'; form-action 'none'">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" integrity="sha384-bs/nf9FbdNouRbMiFcrcZfLXYPKiPaGVGplVbv7dLGECccEXDW+S3zjqSKR5ZEaD" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -90,6 +90,38 @@ td:first-child,th:first-child{text-align:left}
 .verdict b{color:var(--text-primary)}
 .foot{font-size:.78rem;color:var(--text-muted)}
 .hidden{display:none}
+.top{position:sticky;top:0;z-index:30;margin:-28px -16px 32px;padding:14px 16px;background:rgba(7,8,13,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:999px;padding:4px}
+.nav a{color:var(--text-secondary);text-decoration:none;font-size:.88rem;font-weight:500;padding:7px 14px;border-radius:999px;transition:all .2s}
+.nav a:hover{color:var(--text-primary)}
+.nav a.on{color:#fff;background:linear-gradient(135deg,rgba(124,92,255,.55),rgba(34,211,238,.35))}
+.view{display:none;animation:fade .35s ease}.view.on{display:block}
+.btn{display:inline-block;text-decoration:none;padding:12px 20px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#5b8cff 60%,var(--accent-2));color:#fff;font-weight:600;box-shadow:0 10px 30px -8px rgba(124,92,255,.6)}
+.btn.ghost{background:transparent;border:1px solid var(--line-2);box-shadow:none;color:var(--text-primary)}
+.herocta{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 24px}
+.sechead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin:8px 0 12px}
+.h1s{font:700 1.9rem "Space Grotesk",sans-serif;letter-spacing:-.8px;margin:0}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px}
+.tile{border:1px solid var(--line);border-radius:18px;padding:16px;background:linear-gradient(160deg,rgba(255,255,255,.05),rgba(255,255,255,.015));cursor:pointer;transition:transform .2s,border-color .2s}
+.tile:hover{transform:translateY(-2px);border-color:var(--line-2)}
+.tile .n{font-size:.8rem;color:var(--text-secondary)}.tile .p{font:700 1.5rem "Space Grotesk",sans-serif;margin:4px 0;font-variant-numeric:tabular-nums}
+.twocol{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.mini{margin-top:10px}.mini .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line);font-size:.9rem;font-variant-numeric:tabular-nums;cursor:pointer}
+.mini .row:last-child{border:0}
+.chg{font-weight:600}.chg.pos{color:var(--good)}.chg.neg{color:var(--bad)}
+.go{padding:6px 12px;font-size:.78rem;border-radius:9px}
+.tabbar{display:none}
+#mktTable td:nth-child(2),#mktTable th:nth-child(2){text-align:left}
+.top{box-shadow:0 0 0 100vmax rgba(7,8,13,.72);clip-path:inset(0 -100vmax)}
+@media (max-width:760px){
+  .nav{display:none}
+  .twocol{grid-template-columns:1fr}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(10,11,18,.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom))}
+  .tabbar a{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--text-muted);text-decoration:none;font-size:.68rem;padding:4px 0}
+  .tabbar a span{font-size:1.15rem;line-height:1}
+  .tabbar a.on{color:#fff}
+  .wrap{padding-bottom:90px}
+}
 .pick{grid-column:span 2;min-width:0}
 @media (max-width:600px){.pick{grid-column:auto}}
 .searchbox{position:relative}
@@ -127,14 +159,42 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
 <div class="wrap">
   <div class="top">
     <div class="brand"><div class="logo">AK</div>AK Invest</div>
+    <nav class="nav" id="nav">
+      <a href="#accueil" data-view="accueil">Accueil</a>
+      <a href="#marches" data-view="marches">Marchés</a>
+      <a href="#simulateur" data-view="simulateur">Simulateur</a>
+      <a href="#trading" data-view="trading">Trading</a>
+      <a href="#apprendre" data-view="apprendre">Apprendre</a>
+    </nav>
     <div class="badge"><i></i>Prix réels du marché</div>
   </div>
+
+  <section class="view" id="v-accueil">
   <div class="hero">
     <h1>Teste avant <span>d'investir.</span></h1>
     <p class="sub">Cryptos, actions et ETF : compare des stratégies connues sur les vrais prix du passé, avec les frais comptés.</p>
   </div>
+    <div class="herocta"><a class="btn" href="#simulateur">Lancer une simulation</a><a class="btn ghost" href="#marches">Voir les marchés</a></div>
   <div class="banner">⚠️ <span>Le simulateur utilise de l'argent virtuel. La partie « Trading réel » utilise ton vrai argent. Rien ici n'est un conseil d'investissement, et les résultats passés ne garantissent pas les résultats futurs.</span></div>
+    <div class="sechead"><h2>Cryptos en direct</h2><span class="hint" id="liveTime"></span></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="twocol">
+      <div class="card"><h2>Plus fortes hausses 24 h</h2><div id="gainers" class="mini"></div></div>
+      <div class="card"><h2>Plus fortes baisses 24 h</h2><div id="losers" class="mini"></div></div>
+    </div>
+  </section>
 
+  <section class="view" id="v-marches">
+    <div class="sechead"><h1 class="h1s">Marchés</h1></div>
+    <p class="sub">Toutes les cryptos disponibles en euros, triées par volume échangé sur 24 h. Pour les actions et les ETF, utilise la recherche du Simulateur.</p>
+    <div class="card">
+      <div class="toolbar"><input id="mktFilter" type="search" placeholder="Filtrer : bitcoin, sol…" autocomplete="off" style="max-width:320px"><span class="hint" id="mktInfo"></span></div>
+      <div class="tablewrap"><table id="mktTable"></table></div>
+    </div>
+  </section>
+
+  <section class="view" id="v-simulateur">
+    <div class="sechead"><h1 class="h1s">Simulateur</h1></div>
   <div class="card">
     <div class="controls">
       <div class="pick"><label for="search">Actif</label>
@@ -160,8 +220,34 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
     <div class="strats" id="strats"></div>
     <div id="status"></div>
   </div>
+  <div id="results" class="hidden">
+    <div class="kpis">
+      <div class="kpi"><div class="k">Meilleure stratégie</div><div class="v" id="kpiBest">–</div><div class="s" id="kpiBestSub"></div></div>
+      <div class="kpi"><div class="k">Valeur finale</div><div class="v" id="kpiFinal">–</div><div class="s" id="kpiFinalSub"></div></div>
+      <div class="kpi"><div class="k">Gain</div><div class="v" id="kpiGain">–</div><div class="s" id="kpiGainSub"></div></div>
+      <div class="kpi"><div class="k">Pire chute</div><div class="v" id="kpiDD">–</div><div class="s">Baisse max. en cours de route</div></div>
+    </div>
+    <div class="card">
+      <div class="toolbar"><h2 id="chartTitle">Valeur du portefeuille</h2>
+        <label class="toggle"><input type="checkbox" id="logscale"> Échelle logarithmique</label></div>
+      <div class="chartbox"><canvas id="chart" aria-label="Valeur du portefeuille de chaque stratégie au fil du temps" role="img"></canvas></div>
+    </div>
+    <div class="card">
+      <h2 style="margin-bottom:10px">Résultats</h2>
+      <p class="verdict" id="verdict"></p>
+      <div class="tablewrap"><table id="table"></table></div>
+    </div>
+    <div class="card">
+      <h2 style="margin-bottom:6px">Test anti-illusion</h2>
+      <p class="sub" style="margin-bottom:10px">On coupe la période en deux. Une stratégie sérieuse doit marcher sur les <b>deux</b> moitiés, pas seulement sur une.</p>
+      <div class="tablewrap"><table id="split"></table></div>
+    </div>
+  </div>
+  </section>
 
-  <details class="card trade" id="tradeCard">
+  <section class="view" id="v-trading">
+    <div class="sechead"><h1 class="h1s">Trading</h1></div>
+  <details class="card trade" id="tradeCard" open>
     <summary><h2>Trading réel <span class="tag">Kraken · argent réel</span></h2></summary>
     <div class="tradebody">
       <p class="hint warn">Ordres réels avec ton argent. Chaque ordre est d'abord vérifié par Kraken, puis tu dois confirmer. Le relais doit être lancé sur ton PC.</p>
@@ -188,37 +274,30 @@ button.danger{background:linear-gradient(135deg,#ff5a6e,#ff8a5b);box-shadow:0 10
       </div>
     </div>
   </details>
+  </section>
 
-  <div id="results" class="hidden">
-    <div class="kpis">
-      <div class="kpi"><div class="k">Meilleure stratégie</div><div class="v" id="kpiBest">–</div><div class="s" id="kpiBestSub"></div></div>
-      <div class="kpi"><div class="k">Valeur finale</div><div class="v" id="kpiFinal">–</div><div class="s" id="kpiFinalSub"></div></div>
-      <div class="kpi"><div class="k">Gain</div><div class="v" id="kpiGain">–</div><div class="s" id="kpiGainSub"></div></div>
-      <div class="kpi"><div class="k">Pire chute</div><div class="v" id="kpiDD">–</div><div class="s">Baisse max. en cours de route</div></div>
-    </div>
-    <div class="card">
-      <div class="toolbar"><h2 id="chartTitle">Valeur du portefeuille</h2>
-        <label class="toggle"><input type="checkbox" id="logscale"> Échelle logarithmique</label></div>
-      <div class="chartbox"><canvas id="chart" aria-label="Valeur du portefeuille de chaque stratégie au fil du temps" role="img"></canvas></div>
-    </div>
-    <div class="card">
-      <h2 style="margin-bottom:10px">Résultats</h2>
-      <p class="verdict" id="verdict"></p>
-      <div class="tablewrap"><table id="table"></table></div>
-    </div>
-    <div class="card">
-      <h2 style="margin-bottom:6px">Test anti-illusion</h2>
-      <p class="sub" style="margin-bottom:10px">On coupe la période en deux. Une stratégie sérieuse doit marcher sur les <b>deux</b> moitiés, pas seulement sur une.</p>
-      <div class="tablewrap"><table id="split"></table></div>
-    </div>
-  </div>
-
+  <section class="view" id="v-apprendre">
+    <div class="sechead"><h1 class="h1s">Apprendre</h1></div>
   <div class="card">
     <h2 style="margin-bottom:14px">Les stratégies, expliquées simplement</h2>
     <div class="lesson" id="lesson"></div>
   </div>
+    <div class="card"><h2 style="margin-bottom:10px">Les mots à connaître</h2><div class="lesson">
+      <div><b>Frais</b>Ce que la plateforme prend à chaque achat ou vente. Sur les petites sommes, ils pèsent lourd.</div>
+      <div><b>Pire chute</b>La plus grosse baisse entre un sommet et un creux. Elle mesure le stress que tu dois supporter.</div>
+      <div><b>ETF</b>Un panier de centaines d'actions acheté en une fois. Exemple : MSCI World, S&amp;P 500.</div>
+      <div><b>Taux de change</b>Une action en dollars peut monter en dollars mais baisser en euros si le dollar baisse.</div>
+    </div></div>
   <p class="foot">Prix : Binance pour les cryptos (paires en euros), Twelve Data pour les actions et ETF. Les prix en devise étrangère (dollar, livre…) sont convertis en euros avec le taux de change de chaque jour : l'effet du change est donc compté. Un prix par jour. Les ordres sont simulés à l'ouverture du jour suivant le signal.</p>
+  </section>
 </div>
+<nav class="tabbar" id="tabbar">
+  <a href="#accueil" data-view="accueil"><span>⌂</span>Accueil</a>
+  <a href="#marches" data-view="marches"><span>▤</span>Marchés</a>
+  <a href="#simulateur" data-view="simulateur"><span>◷</span>Simuler</a>
+  <a href="#trading" data-view="trading"><span>⇅</span>Trading</a>
+  <a href="#apprendre" data-view="apprendre"><span>✎</span>Apprendre</a>
+</nav>
 <script>
 // ===== Moteur de simulation (argent virtuel) =====
 // candles : [{t: timestamp ms, o: ouverture, c: clôture}] triés par date
@@ -676,6 +755,68 @@ $("relayConnect").addEventListener("click", relayConnect);
 $("tCheck").addEventListener("click", checkOrder);
 $("tGo").addEventListener("click", sendOrder);
 $("tCancel").addEventListener("click", () => { pending = null; $("tConfirm").classList.add("hidden"); });
+
+// ===== Menus et pages (comme une vraie plateforme) =====
+const VIEWS = ["accueil", "marches", "simulateur", "trading", "apprendre"];
+function showView() {
+  const v = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : "accueil";
+  VIEWS.forEach(n => $("v-" + n).classList.toggle("on", n === v));
+  document.querySelectorAll("[data-view]").forEach(a => a.classList.toggle("on", a.dataset.view === v));
+  if (v === "accueil" || v === "marches") loadMarkets();
+  window.scrollTo({ top: 0 });
+}
+window.addEventListener("hashchange", showView);
+
+// ----- Marchés : toutes les cryptos en euros, prix et variation 24 h (Binance, public) -----
+let market = [], marketAt = 0;
+const priceFmt = v => v.toLocaleString("fr-FR", { style: "currency", currency: "EUR", maximumFractionDigits: v < 1 ? 6 : 2 });
+const volFmt = v => v >= 1e6 ? (v / 1e6).toFixed(1).replace(".", ",") + " M€" : v >= 1e3 ? (v / 1e3).toFixed(0) + " k€" : v.toFixed(0) + " €";
+async function loadMarkets(force) {
+  if (!force && Date.now() - marketAt < 60000 && market.length) return renderMarkets();
+  try {
+    const all = await fetch("https://data-api.binance.vision/api/v3/ticker/24hr?type=MINI").then(r => r.json());
+    market = all.filter(t => t.symbol.endsWith("EUR") && !/^(EUR|USDT|USDC|FDUSD)/.test(t.symbol) && +t.lastPrice > 0)
+      .map(t => { const base = t.symbol.slice(0, -3); return { symbol: t.symbol, base, name: CRYPTO_NAMES[base] || base, price: +t.lastPrice, chg: (t.lastPrice / t.openPrice - 1) * 100, vol: +t.quoteVolume }; })
+      .sort((a, b) => b.vol - a.vol);
+    marketAt = Date.now();
+    renderMarkets();
+  } catch (e) { $("mktInfo").textContent = "Impossible de charger les prix (connexion ?)."; }
+}
+function cryptoAsset(m) { return { type: "c", symbol: m.symbol, base: m.base, label: `${m.name} (${m.base})`, sub: "Crypto · EUR" }; }
+function simulate(m) { pickAsset(cryptoAsset(m)); location.hash = "#simulateur"; }
+function chgSpan(c) { const s = document.createElement("span"); s.className = "chg " + (c >= 0 ? "pos" : "neg"); s.textContent = (c >= 0 ? "+" : "") + c.toFixed(2).replace(".", ",") + " %"; return s; }
+function renderMarkets() {
+  const t = new Date(marketAt).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+  $("liveTime").textContent = "Mis à jour à " + t; $("mktInfo").textContent = `${market.length} cryptos · mis à jour à ${t}`;
+  // tuiles de l'accueil
+  $("tiles").innerHTML = "";
+  ["BTC", "ETH", "SOL", "XRP"].map(b => market.find(m => m.base === b)).filter(Boolean).forEach(m => {
+    const d = document.createElement("div"); d.className = "tile";
+    const n = document.createElement("div"); n.className = "n"; n.textContent = `${m.name} · ${m.base}`;
+    const p = document.createElement("div"); p.className = "p"; p.textContent = priceFmt(m.price);
+    d.append(n, p, chgSpan(m.chg)); d.addEventListener("click", () => simulate(m)); $("tiles").appendChild(d);
+  });
+  const liquid = market.filter(m => m.vol > 50000);
+  const mini = (id, list) => { $(id).innerHTML = ""; list.forEach(m => { const r = document.createElement("div"); r.className = "row"; const a = document.createElement("span"); a.textContent = `${m.name} (${m.base})`; r.append(a, chgSpan(m.chg)); r.addEventListener("click", () => simulate(m)); $(id).appendChild(r); }); };
+  mini("gainers", [...liquid].sort((a, b) => b.chg - a.chg).slice(0, 5));
+  mini("losers", [...liquid].sort((a, b) => a.chg - b.chg).slice(0, 5));
+  // tableau des marchés
+  const q = ($("mktFilter").value || "").toLowerCase();
+  const tb = $("mktTable"); tb.innerHTML = "<tr><th>#</th><th>Crypto</th><th>Prix</th><th>24 h</th><th>Volume 24 h</th><th></th></tr>";
+  market.filter(m => !q || (m.name + " " + m.base).toLowerCase().includes(q)).slice(0, 100).forEach((m, i) => {
+    const tr = document.createElement("tr");
+    const cells = [String(i + 1), `${m.name} (${m.base})`, priceFmt(m.price), null, volFmt(m.vol), null];
+    cells.forEach((c, k) => { const td = document.createElement("td");
+      if (k === 3) td.appendChild(chgSpan(m.chg));
+      else if (k === 5) { const b = document.createElement("button"); b.type = "button"; b.className = "go"; b.textContent = "Simuler"; b.addEventListener("click", () => simulate(m)); td.appendChild(b); }
+      else td.textContent = c;
+      tr.appendChild(td); });
+    tb.appendChild(tr);
+  });
+}
+$("mktFilter").addEventListener("input", renderMarkets);
+setInterval(() => { if (["#accueil", "#marches", ""].includes(location.hash)) loadMarkets(true); }, 60000);
+showView();
 </script>
 </body>
 </html>
